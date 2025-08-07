@@ -29,10 +29,13 @@
     box-sizing: border-box;
 }
 
+/* Performance optimizations */
 html {
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
-    scroll-padding-top: 80px; /* Account for fixed navbar */
+    scroll-padding-top: 80px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; /* Account for fixed navbar */
 }
 
 body {
