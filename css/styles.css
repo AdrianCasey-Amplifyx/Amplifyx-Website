@@ -1223,30 +1223,42 @@ section {
 
 /* Testimonials Section */
 .testimonials-wrapper {
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     position: relative;
     width: 100%;
     padding: var(--spacing-md) 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar styling */
+.testimonials-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.testimonials-wrapper::-webkit-scrollbar-track {
+    background: rgba(123, 63, 242, 0.1);
+    border-radius: 4px;
+}
+
+.testimonials-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #7B3FF2, #E94CFF);
+    border-radius: 4px;
+}
+
+.testimonials-wrapper::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #9D5FFE, #FF6FFF);
 }
 
 .testimonials-track {
     display: flex;
     gap: var(--spacing-lg);
-    animation: scrollTestimonials 30s linear infinite;
+    width: fit-content;
+    padding: 0 var(--spacing-md);
 }
 
-.testimonials-track:hover {
-    animation-play-state: paused;
-}
-
-@keyframes scrollTestimonials {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
-}
+/* Auto-scroll animation removed - now manual scrolling */
 
 .testimonial-card {
     min-width: 400px;
@@ -1516,8 +1528,8 @@ section {
 
 .fade-in-section {
     opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transform: translateY(5px);
+    transition: opacity 0.05s ease, transform 0.05s ease;
 }
 
 .fade-in-section.visible {
@@ -1529,8 +1541,8 @@ section {
 .stagger-item .service-card,
 .stagger-item .client-type {
     opacity: 0;
-    transform: translateY(5px);
-    transition: opacity 0.1s ease, transform 0.1s ease;
+    transform: translateY(2px);
+    transition: opacity 0.05s ease, transform 0.05s ease;
 }
 
 .stagger-item .solution-card.visible,
@@ -1543,7 +1555,7 @@ section {
 /* Loading animation - instant */
 body {
     opacity: 0;
-    transition: opacity 0.1s ease;
+    transition: opacity 0.05s ease;
 }
 
 body.loaded {
