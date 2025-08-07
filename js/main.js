@@ -60,13 +60,13 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.classList.add('visible');
             
-            // Add stagger effect for grid items
+            // Add stagger effect for grid items - much faster
             if (entry.target.classList.contains('stagger-item')) {
                 const items = entry.target.querySelectorAll('.solution-card, .service-card, .client-type');
                 items.forEach((item, index) => {
                     setTimeout(() => {
                         item.classList.add('visible');
-                    }, index * 100);
+                    }, index * 20); // Was 100ms, now 20ms
                 });
             }
         }
@@ -232,13 +232,13 @@ function typeWriter(element, text, speed = 100) {
     type();
 }
 
-// Optional: Add typed effect to hero tagline
-document.addEventListener('DOMContentLoaded', () => {
-    const heroTagline = document.querySelector('.hero-tagline');
-    if (heroTagline) {
-        const originalText = heroTagline.textContent;
-        setTimeout(() => {
-            typeWriter(heroTagline, originalText, 50);
-        }, 500);
-    }
-});
+// Removed typing effect for faster load
+// document.addEventListener('DOMContentLoaded', () => {
+//     const heroTagline = document.querySelector('.hero-tagline');
+//     if (heroTagline) {
+//         const originalText = heroTagline.textContent;
+//         setTimeout(() => {
+//             typeWriter(heroTagline, originalText, 50);
+//         }, 500);
+//     }
+// });
