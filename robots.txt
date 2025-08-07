@@ -1,0 +1,13 @@
+# Robots.txt for amplifyx.com.au
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://amplifyx.com.au/sitemap.xml
+
+# Crawl-delay for bots that respect it
+Crawl-delay: 1
+
+# Block access to any development or private directories (if any)
+# Disallow: /private/
+# Disallow: /admin/

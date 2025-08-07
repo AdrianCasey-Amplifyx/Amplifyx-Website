@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Amplifyx Technologies - AI-powered product development. We help you embrace AI and ship fast with rapid prototyping, AI research, and fractional product leadership.">
+    <meta name="keywords" content="AI, product development, rapid prototyping, AI research, fractional CTO, Australia">
+    <meta name="author" content="Amplifyx Technologies">
+    
+    <meta property="og:title" content="Amplifyx Technologies - Embrace AI. Ship Fast.">
+    <meta property="og:description" content="Stuck in tech challenges? We empower founders with AI-driven strategies, rapid prototyping, and clear execution.">
+    <meta property="og:image" content="https://amplifyx.com.au/assets/images/og-image.png">
+    <meta property="og:url" content="https://amplifyx.com.au">
+    <meta property="og:type" content="website">
+    
+    <title>Amplifyx Technologies - Embrace AI. Ship Fast.</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#home">
+                    <img src="assets/images/logo.svg" alt="Amplifyx Technologies" style="height: 50px;">
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="#problems" class="nav-link">Problems</a>
+                <a href="#solutions" class="nav-link">Solutions</a>
+                <a href="#services" class="nav-link">We Do</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a href="#clients" class="nav-link">Clients</a>
+            </div>
+            
+            <div class="nav-cta">
+                <a href="#contact" class="btn btn-primary">Book a Discovery Call</a>
+            </div>
+            
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <p class="hero-tagline">UNBLOCK YOUR PRODUCT ROADMAP</p>
+                    <h1 class="hero-title"><span class="text-glow">Embrace AI.</span> <span class="text-gradient">Ship Fast.</span></h1>
+                    <p class="hero-description">
+                        Stuck in tech challenges?<br>
+                        Amplifyx empowers founders with AI-driven strategies, rapid prototyping, and clear execution.
+                    </p>
+                    <a href="#contact" class="btn btn-primary btn-large">Book a Discovery Call</a>
+                </div>
+                <div class="hero-visual">
+                    <div class="interactive-demo">
+                        <div class="demo-controls">
+                            <button class="demo-btn active" data-demo="prototype">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M9 9H15V15H9V9Z" fill="currentColor"/>
+                                </svg>
+                                Generate Prototype
+                            </button>
+                            <button class="demo-btn" data-demo="integrate">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor"/>
+                                </svg>
+                                AI Integration
+                            </button>
+                            <button class="demo-btn" data-demo="automation">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L2 7V12C2 16.5 4 20 12 21C20 20 22 16.5 22 12V7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 8V12M12 12L9 15M12 12L15 15" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                AI Automation
+                            </button>
+                        </div>
+                        
+                        <div class="demo-display">
+                            <!-- Prototype Demo -->
+                            <div class="demo-screen active" id="demo-prototype">
+                                <div class="mockup-container">
+                                    <div class="mockup-header">
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                    </div>
+                                    <div class="mockup-content">
+                                        <div class="skeleton-nav"></div>
+                                        <div class="skeleton-hero">
+                                            <div class="skeleton-text lg"></div>
+                                            <div class="skeleton-text md"></div>
+                                            <div class="skeleton-btn"></div>
+                                        </div>
+                                        <div class="skeleton-cards">
+                                            <div class="skeleton-card"></div>
+                                            <div class="skeleton-card"></div>
+                                            <div class="skeleton-card"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="demo-label">AI-Generated Prototype in 24 hours</div>
+                            </div>
+                            
+                            <!-- AI Integration Demo -->
+                            <div class="demo-screen" id="demo-integrate">
+                                <div class="ai-integration">
+                                    <div class="product-interface">
+                                        <div class="product-header">
+                                            <div class="product-nav">
+                                                <span class="nav-item">Dashboard</span>
+                                                <span class="nav-item">Analytics</span>
+                                                <span class="nav-item">Settings</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <div class="chat-interface">
+                                                <div class="chat-bubble user">How can I improve my sales?</div>
+                                                <div class="chat-bubble ai">
+                                                    <div class="ai-thinking">
+                                                        <span></span><span></span><span></span>
+                                                    </div>
+                                                    <div class="ai-response">Based on your data, I recommend focusing on email campaigns. Your open rate is 45% higher on Tuesdays.</div>
+                                                </div>
+                                            </div>
+                                            <div class="ai-magic-button">
+                                                <svg class="magic-wand" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                                    <path d="M15 4V2M15 16V14M8 9H10M20 9H22M17.8 11.8L19 13M17.8 6.2L19 5M3 21L12 12M12.2 6.2L11 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                                </svg>
+                                                <span>AI Assistant Active</span>
+                                            </div>
+                                        </div>
+                                        <div class="integration-particles">
+                                            <div class="particle"></div>
+                                            <div class="particle"></div>
+                                            <div class="particle"></div>
+                                            <div class="particle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="demo-label">Seamless AI Integration in Your Product</div>
+                            </div>
+                            
+                            <!-- AI Automation Demo -->
+                            <div class="demo-screen" id="demo-automation">
+                                <div class="automation-builder">
+                                    <div class="workflow-canvas">
+                                        <!-- Simplified linear flow -->
+                                        <div class="workflow-stage input-stage">
+                                            <div class="stage-icon">📥</div>
+                                            <div class="stage-label">Input</div>
+                                        </div>
+                                        
+                                        <div class="flow-arrow">→</div>
+                                        
+                                        <div class="workflow-stage ai-stage">
+                                            <div class="stage-icon">🤖</div>
+                                            <div class="stage-label">AI Processing</div>
+                                            <div class="ai-pulse"></div>
+                                        </div>
+                                        
+                                        <div class="flow-arrow">→</div>
+                                        
+                                        <div class="workflow-stage output-stage">
+                                            <div class="stage-icon">✅</div>
+                                            <div class="stage-label">Actions</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="automation-stats">
+                                        <div class="stat-item">
+                                            <div class="stat-value" data-value="247">0</div>
+                                            <div class="stat-label">Tasks/Hour</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-value" data-value="99.8">0</div>
+                                            <div class="stat-label">% Accuracy</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-value" data-value="0.3">0</div>
+                                            <div class="stat-label">Seconds</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="demo-label">AI Workflow Automation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problems" class="problem-section">
+        <div class="container">
+            <h2 class="section-title">Stuck with a stalled roadmap and a small, overloaded team?</h2>
+            <p class="section-description">
+                Your backlog keeps growing while competitors ship faster. Ideas pile up in docs, designs stay half-finished, and PRDs collect dust. We help you bridge the gap between planning and shipping.
+            </p>
+            <img src="assets/images/developer-illustration.png" alt="Developer working with UI cards" class="problem-illustration-img">
+        </div>
+    </section>
+
+    <!-- How We Help Section -->
+    <section id="solutions" class="solutions-section">
+        <div class="container">
+            <h2 class="section-title">How Do We Help?</h2>
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>MAKE SENSE OF WHAT'S POSSIBLE</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9 9H15V15H9V9Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>INTEGRATE AI INTO REAL PRODUCT FEATURES</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>PROTOTYPE IN WEEKS, NOT QUARTERS</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>ACCESS HIGH-QUALITY ONSHORE TALENT AT FRACTION OF THE COST</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 2H6C5.45 2 5 2.45 5 3V21C5 21.55 5.45 22 6 22H18C18.55 22 19 21.55 19 21V7L14 2Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M14 2V7H19" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>TRANSLATE RESEARCH INTO EXECUTION</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>VALIDATE AI USE CASES BEFORE COMMITTING</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 3V15M9 15L5 11M9 15L13 11" stroke="currentColor" stroke-width="2"/>
+                            <path d="M15 21V9M15 9L11 13M15 9L19 13" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>SCALE FROM MVP TO PRODUCTION SEAMLESSLY</h3>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3>DE-RISK AI INVESTMENTS WITH PROOF OF CONCEPTS</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Do Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 class="section-title">What We Do?</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>AI Opportunity Audits</h3>
+                    <p>We identify where AI will transform value in your product.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            <path d="M23 21V19C23 18 22 17 21 16.5" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="18" cy="7" r="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Fractional Product Leadership</h3>
+                    <p>CTO-caliber insights without the overhead. We drive strategy from two to full-time.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M8 21L16 21" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 17V21" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Rapid Product Prototyping</h3>
+                    <p>We turn concepts into functional MVPs fast.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2"/>
+                            <path d="M21 12V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>AI Research & Experimentation</h3>
+                    <p>We explore and validate LLM use cases from Proof to Launch.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 1V6M12 18V23" stroke="currentColor" stroke-width="2"/>
+                            <path d="M4.22 4.22L7.76 7.76M16.24 16.24L19.78 19.78" stroke="currentColor" stroke-width="2"/>
+                            <path d="M1 12H6M18 12H23" stroke="currentColor" stroke-width="2"/>
+                            <path d="M4.22 19.78L7.76 16.24M16.24 7.76L19.78 4.22" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Micro-Automations</h3>
+                    <p>Bespoke automations for specific tasks like job mapping, workflow optimization, and repetitive process elimination.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="16 18 22 12 16 6" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="8 6 2 12 8 18" stroke="currentColor" stroke-width="2"/>
+                            <path d="M13 3L10 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>AI-Powered Development</h3>
+                    <p>Supercharged software development with onshore senior full-stack developers, AI-enabled for exceptional speed while maintaining the highest code quality and security standards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonials-wrapper">
+                <div class="testimonials-track">
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Adrian transformed our chaotic product roadmap into a streamlined AI-powered machine. In just 6 weeks, we went from concept to a working prototype that secured our Series A funding."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">SC</div>
+                            <div>
+                                <p class="author-name">Sarah Chen</p>
+                                <p class="author-role">CEO, TechStart</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Working with Adrian was a game-changer. He helped us integrate GPT-4 into our analytics platform, reducing manual reporting time by 87%. His technical depth and product vision are unmatched."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">MT</div>
+                            <div>
+                                <p class="author-name">Marcus Thompson</p>
+                                <p class="author-role">Founder, DataFlow</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Adrian doesn't just manage products, he architects solutions. He led our AI automation initiative that now handles 10,000+ patient interactions daily with 99.8% accuracy."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">ER</div>
+                            <div>
+                                <p class="author-name">Emily Rodriguez</p>
+                                <p class="author-role">CTO, HealthTech Pro</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Adrian helped us pivot from a failing product to an AI-first approach that increased our MRR by 3x in 4 months. His ability to see opportunities where others see obstacles is remarkable."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">JW</div>
+                            <div>
+                                <p class="author-name">James Wu</p>
+                                <p class="author-role">VP Product, FinanceAI</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Adrian took our vague AI ideas and turned them into a product that teachers actually love. He built our MVP in 3 weeks, and we had paying customers in week 4. Absolute legend."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">LA</div>
+                            <div>
+                                <p class="author-name">Lisa Anderson</p>
+                                <p class="author-role">Founder, EduTech Solutions</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Duplicate for infinite scroll -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Adrian transformed our chaotic product roadmap into a streamlined AI-powered machine. In just 6 weeks, we went from concept to a working prototype that secured our Series A funding."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">SC</div>
+                            <div>
+                                <p class="author-name">Sarah Chen</p>
+                                <p class="author-role">CEO, TechStart</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <div class="testimonial-rating">
+                            <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                        </div>
+                        <p class="testimonial-text">
+                            "Working with Adrian was a game-changer. He helped us integrate GPT-4 into our analytics platform, reducing manual reporting time by 87%. His technical depth and product vision are unmatched."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar gradient-bg">MT</div>
+                            <div>
+                                <p class="author-name">Marcus Thompson</p>
+                                <p class="author-role">Founder, DataFlow</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Types Section -->
+    <section id="clients" class="clients-section">
+        <div class="container">
+            <h2 class="section-title">Who Are Our Typical Clients?</h2>
+            <div class="clients-grid">
+                <div class="client-type">
+                    <div class="client-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>A FEW ENGINEERS (OFTEN OFFSHORE)</h3>
+                </div>
+                
+                <div class="client-type">
+                    <div class="client-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 2V10H2C2 15.5228 6.47715 20 12 20C17.5228 20 22 15.5228 22 10C22 4.47715 17.5228 0 12 0" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>NO REAL AI EXPERTISE</h3>
+                </div>
+                
+                <div class="client-type">
+                    <div class="client-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>A MESSY PRODUCT BACKLOG</h3>
+                </div>
+                
+                <div class="client-type">
+                    <div class="client-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7V12C2 16.5 5 20.2 12 21C19 20.2 22 16.5 22 12V7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>PRESSURE TO DELIVER SOMETHING</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition Section -->
+    <section class="value-section">
+        <div class="container">
+            <h2 class="value-title">
+                We become your product and AI partner — driving from concept to clarity to creation.
+            </h2>
+        </div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="gradient-orb orb-4"></div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Let's Talk</h2>
+            <p class="contact-description">
+                Every Week You Stay Stuck Is A Week Your<br>
+                Competitors Get Ahead. Let's Change That.
+            </p>
+            <a href="https://calendly.com/amplifyx" class="btn btn-primary btn-large">Book a Discovery Call</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Amplifyx Technologies</h3>
+                    <p>Stuck in Tech Challenges? Amplifyx Empowers Founders with AI-Driven Strategies, Rapid Prototyping, and Clear Execution. Embrace the Tactics.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <a href="https://instagram.com/amplifyx">Instagram</a>
+                        <a href="https://telegram.me/amplifyx">Telegram</a>
+                        <a href="https://linkedin.com/company/amplifyx">LinkedIn</a>
+                    </div>
+                    <div class="footer-column">
+                        <a href="#problems">Problems</a>
+                        <a href="#solutions">Solutions</a>
+                        <a href="#services">We Do</a>
+                        <a href="#testimonials">Testimonials</a>
+                        <a href="#contact">Contact</a>
+                        <a href="#contact">Let's Talk</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Amplifyx Technologies. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
