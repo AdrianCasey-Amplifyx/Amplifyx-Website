@@ -81,8 +81,12 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
      "score": 85
    }
    -->
-   CRITICAL: Include ALL 8 fields EVERY TIME. If phone wasn't provided, use "phone": "". Never omit fields.
-   Order MUST be: name, company, email, phone, projectType, timeline, budget, score.
+   CRITICAL RULES:
+   - Include ALL 8 fields EVERY TIME
+   - If phone was provided in conversation (like 0431481227), INCLUDE IT
+   - If phone wasn't provided, use "phone": ""
+   - Extract phone from ANY message where user provided it
+   - Order MUST be: name, company, email, phone, projectType, timeline, budget, score
 
 6. PROJECT EVALUATION (INTERNAL SCORING)
    Assess the project opportunity (1-100) based on:
@@ -545,6 +549,7 @@ async function handleAIConversation(message) {
         // Debug: Log what fields we have
         console.log('Fields collected:', chatbotState.fieldsCollected);
         console.log('Lead data:', chatbotState.leadData);
+        console.log('📱 Phone status - Collected:', chatbotState.fieldsCollected.phone, 'Value:', chatbotState.leadData.phone);
         
         // Check if AI is asking for confirmation
         const lowerResponse = aiResponse.toLowerCase();
@@ -643,8 +648,10 @@ function extractFieldsFromMessage(message) {
     // Phone number extraction (Australian and international formats)
     const phoneRegex = /(?:\+?61|0)?4\d{8}|\d{10}|\+\d{1,3}\s?\d{4,14}/;
     const phoneMatch = message.match(phoneRegex);
-    if (phoneMatch && !chatbotState.leadData.phone) {
+    if (phoneMatch && !chatbotState.fieldsCollected.phone) {
         chatbotState.leadData.phone = phoneMatch[0];
+        chatbotState.fieldsCollected.phone = true;  // CRITICAL: Mark as collected!
+        console.log('📱 Phone extracted:', chatbotState.leadData.phone);
     }
     
     // Company extraction - improved to handle various formats
