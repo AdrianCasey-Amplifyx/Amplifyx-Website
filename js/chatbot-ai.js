@@ -65,23 +65,40 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
    - Display the details in a clean format with appropriate emojis
    - End with: "If that's everything correct, I'll pass these details to our team and they'll be in touch with you shortly to discuss how we can help with your [specific project type]."
    - NEVER say "someone will contact" before confirmation
+   - The system will automatically add confirmation buttons after your message
 
-5. PROJECT EVALUATION (INTERNAL ONLY)
-   After gathering information, internally assess the project opportunity (1-100):
+5. STRUCTURED DATA OUTPUT (HIDDEN)
+   When showing confirmation, include hidden structured data at the end:
+   <!--STRUCTURED_DATA:
+   {
+     "name": "Adrian",
+     "company": "Oncore Services",
+     "email": "adrian@example.com",
+     "phone": "0431481227",
+     "projectType": "AI Integration",
+     "timeline": "3 months",
+     "budget": "$25k",
+     "score": 75
+   }
+   -->
+   This helps ensure accurate data capture for our database.
+
+6. PROJECT EVALUATION (INTERNAL SCORING)
+   Assess the project opportunity (1-100) based on:
    - Budget size (larger = higher score)
    - Timeline urgency (ASAP/urgent = higher score)
    - Project complexity/fit with our services (better fit = higher score)
    - Clear decision-making authority (confirmed = higher score)
-   Include this score in a hidden comment: <!--PROJECT_SCORE:75-->
+   Include this in the structured data's "score" field
 
-6. CONVERSATION GUIDELINES
+7. CONVERSATION GUIDELINES
    - Be consultative and professional, not salesy
    - Show genuine interest in their project
    - Use their actual words when summarizing
    - Avoid terms like "lead", "qualify", or "sales"
    - Focus on "your project", "your requirements", "this opportunity"
 
-7. PROFESSIONAL CLOSURE
+8. PROFESSIONAL CLOSURE
    After confirmation, respond warmly:
    "Excellent! I've passed your information to our team. Someone will reach out to you within 24 hours to discuss your [specific need] in detail. 
    
@@ -365,9 +382,7 @@ async function processUserMessage(message) {
         // Handle updates
         extractUpdateFromMessage(message);
         chatbotState.awaitingUpdate = false;
-        setTimeout(() => {
-            showConfirmation();
-        }, 1000);
+        // Let AI handle showing the updated confirmation naturally
     } else if (chatbotState.conversationMode === 'ai') {
         await handleAIConversation(message);
     }
@@ -406,11 +421,8 @@ async function handleAIConversation(message) {
         }
     }
     
-    // Check if we have all required fields
-    if (chatbotState.allFieldsCollected() && !chatbotState.awaitingConfirmation) {
-        showConfirmation();
-        return;
-    }
+    // Let AI handle confirmation naturally when all fields are collected
+    // Don't force a confirmation screen
     
     try {
         // Prepare context message
@@ -480,14 +492,38 @@ async function handleAIConversation(message) {
         // Extract any fields from AI's understanding
         extractFieldsFromAIResponse(aiResponse);
         
-        // Extract AI's project score if present
-        const scoreMatch = aiResponse.match(/<!--PROJECT_SCORE:(\d+)-->/);
-        if (scoreMatch) {
-            const aiScore = parseInt(scoreMatch[1]);
-            chatbotState.leadData.aiScore = aiScore;
-            console.log('AI Project Score:', aiScore);
-            // Remove the score comment from the displayed message
-            aiResponse = aiResponse.replace(/<!--PROJECT_SCORE:\d+-->/g, '');
+        // Extract structured data if present
+        const structuredDataMatch = aiResponse.match(/<!--STRUCTURED_DATA:([\s\S]*?)-->/);
+        if (structuredDataMatch) {
+            try {
+                const structuredData = JSON.parse(structuredDataMatch[1].trim());
+                console.log('Extracted structured data from AI:', structuredData);
+                
+                // Update lead data with AI's structured output
+                if (structuredData.name) chatbotState.leadData.name = structuredData.name;
+                if (structuredData.company) chatbotState.leadData.company = structuredData.company;
+                if (structuredData.email) chatbotState.leadData.email = structuredData.email;
+                if (structuredData.phone) chatbotState.leadData.phone = structuredData.phone;
+                if (structuredData.projectType) chatbotState.leadData.projectType = structuredData.projectType;
+                if (structuredData.timeline) chatbotState.leadData.timeline = structuredData.timeline;
+                if (structuredData.budget) chatbotState.leadData.budget = structuredData.budget;
+                if (structuredData.score) chatbotState.leadData.aiScore = structuredData.score;
+                
+                // Mark fields as collected
+                if (structuredData.name) chatbotState.fieldsCollected.name = true;
+                if (structuredData.company) chatbotState.fieldsCollected.company = true;
+                if (structuredData.email) chatbotState.fieldsCollected.email = true;
+                if (structuredData.phone) chatbotState.fieldsCollected.phone = true;
+                if (structuredData.projectType) chatbotState.fieldsCollected.projectType = true;
+                if (structuredData.timeline) chatbotState.fieldsCollected.timeline = true;
+                if (structuredData.budget) chatbotState.fieldsCollected.budget = true;
+                
+            } catch (e) {
+                console.error('Failed to parse structured data:', e);
+            }
+            
+            // Remove the structured data from the displayed message
+            aiResponse = aiResponse.replace(/<!--STRUCTURED_DATA:[\s\S]*?-->/g, '');
         }
         
         addBotMessage(aiResponse);
@@ -496,41 +532,25 @@ async function handleAIConversation(message) {
         console.log('Fields collected:', chatbotState.fieldsCollected);
         console.log('Lead data:', chatbotState.leadData);
         
-        // Check if AI is trying to confirm OR wrap up the conversation
+        // Check if AI is asking for confirmation
         const lowerResponse = aiResponse.toLowerCase();
-        const isAITryingToConfirm = 
-            lowerResponse.includes('let me confirm') ||
-            lowerResponse.includes('to confirm') ||
-            lowerResponse.includes('confirming') ||
+        const isAIAskingForConfirmation = 
             lowerResponse.includes('is this correct') ||
+            lowerResponse.includes('is this information correct') ||
             lowerResponse.includes('is everything correct') ||
-            lowerResponse.includes('before we proceed') ||
-            lowerResponse.includes("i've collected") ||
-            lowerResponse.includes("details i've") ||
-            lowerResponse.includes('perfect!');
+            lowerResponse.includes('if that\'s everything correct') ||
+            lowerResponse.includes('if that\'s correct') ||
+            lowerResponse.includes("if that's everything correct");
         
-        // Also check if AI is trying to send emails (should trigger confirmation first)
-        const isAITryingToClose = 
-            lowerResponse.includes('will email') ||
-            lowerResponse.includes('will contact') ||
-            lowerResponse.includes('will reach out') ||
-            lowerResponse.includes('team will') ||
-            lowerResponse.includes('someone will') ||
-            lowerResponse.includes('adrian will');
-        
-        // Show confirmation if we have minimum required fields
-        const hasMinimumFields = chatbotState.leadData.email && 
-                                (chatbotState.leadData.name || chatbotState.leadData.company);
-        
-        // Only show confirmation if not already submitted or awaiting confirmation
-        if (!chatbotState.submissionComplete && !chatbotState.awaitingConfirmation &&
-            ((hasMinimumFields && (isAITryingToConfirm || isAITryingToClose)) || 
-            chatbotState.allFieldsCollected())) {
-            console.log('Showing confirmation screen...');
-            console.log('Reason: AI trying to confirm:', isAITryingToConfirm, 'AI trying to close:', isAITryingToClose);
+        // If AI is asking for confirmation, add buttons and set state
+        if (isAIAskingForConfirmation && !chatbotState.submissionComplete && !chatbotState.awaitingConfirmation) {
+            console.log('AI is asking for confirmation - adding buttons');
+            chatbotState.awaitingConfirmation = true;
+            
+            // Add confirmation buttons after a short delay
             setTimeout(() => {
-                showConfirmation();
-            }, 1500);
+                addConfirmationButtons();
+            }, 500);
         }
         
     } catch (error) {
@@ -661,31 +681,7 @@ function extractFieldsFromAIResponse(response) {
     // Add more patterns as needed
 }
 
-// Show Confirmation Buttons Only (AI handles the text)
-function showConfirmation() {
-    // Don't show confirmation if already submitted
-    if (chatbotState.submissionComplete) {
-        console.log('⚠️ Skipping confirmation - already submitted');
-        return;
-    }
-    
-    // Don't show confirmation multiple times
-    if (chatbotState.awaitingConfirmation) {
-        console.log('⚠️ Already awaiting confirmation');
-        return;
-    }
-    
-    chatbotState.awaitingConfirmation = true;
-    
-    // Only add confirmation buttons - let AI handle the message display
-    // AI will show the captured details naturally in conversation
-    setTimeout(() => {
-        // Just add the buttons without any text
-        addConfirmationButtons();
-    }, 500);
-}
-
-// Add confirmation buttons without text
+// Add confirmation buttons only (AI handles the text display)
 function addConfirmationButtons() {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat-message bot';
@@ -739,10 +735,9 @@ async function handleConfirmation(message) {
         const updateExtracted = extractUpdateFromMessage(message);
         
         if (updateExtracted) {
-            // Show updated confirmation
-            setTimeout(() => {
-                showConfirmation();
-            }, 1000);
+            // Let AI show the updated confirmation naturally
+            addBotMessage("I've updated that information. Let me confirm the details again.");
+            chatbotState.awaitingConfirmation = true;
         } else {
             chatbotState.awaitingUpdate = true;
             addBotMessage("I'll update that for you. Please provide the correct information.");
