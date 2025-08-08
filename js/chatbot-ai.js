@@ -346,6 +346,7 @@ async function handleAIConversation(message) {
             headers['Authorization'] = `Bearer ${chatbotState.apiKey}`;
         }
         
+        console.log('Making API request to:', CHATBOT_CONFIG.apiEndpoint);
         const response = await fetch(CHATBOT_CONFIG.apiEndpoint, {
             method: 'POST',
             headers: headers,
@@ -360,8 +361,11 @@ async function handleAIConversation(message) {
             })
         });
         
+        console.log('API Response status:', response.status);
         if (!response.ok) {
-            throw new Error('API request failed');
+            const errorText = await response.text();
+            console.error('API Error Response:', errorText);
+            throw new Error(`API request failed: ${response.status}`);
         }
         
         const data = await response.json();
