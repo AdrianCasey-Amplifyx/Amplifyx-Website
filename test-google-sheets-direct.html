@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Google Sheets Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0f0f1e;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #7B3FF2, #E94CFF);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover { opacity: 0.9; }
+        .success { color: #2ed573; background: rgba(46, 213, 115, 0.1); padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .error { color: #ff4757; background: rgba(255, 71, 87, 0.1); padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .info { background: rgba(123, 63, 242, 0.1); padding: 10px; border-radius: 5px; margin: 10px 0; }
+        pre { background: #1a1a2e; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Direct Google Sheets Test</h1>
+    
+    <div class="info">
+        <p><strong>Testing different methods to connect to your Google Sheet</strong></p>
+        <p>Web App URL: <code style="color: #E94CFF;">https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec</code></p>
+    </div>
+
+    <button onclick="testDirectFetch()">1. Test Direct Fetch (no CORS)</button>
+    <button onclick="testWithNoCors()">2. Test with no-cors Mode</button>
+    <button onclick="testWithImage()">3. Test with Image Trick</button>
+    <button onclick="sendViaForm()">4. Send via Hidden Form</button>
+    
+    <div id="result"></div>
+
+    <script>
+        const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec';
+        const resultDiv = document.getElementById('result');
+        
+        // Test 1: Direct fetch
+        async function testDirectFetch() {
+            resultDiv.innerHTML = '<div class="info">Testing direct fetch...</div>';
+            
+            try {
+                const response = await fetch(WEBHOOK_URL);
+                const text = await response.text();
+                
+                try {
+                    const data = JSON.parse(text);
+                    resultDiv.innerHTML = `<div class="success">✅ Connection successful!<br><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                } catch (e) {
+                    resultDiv.innerHTML = `<div class="error">❌ Got response but not JSON:<br><pre>${text.substring(0, 500)}...</pre></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Fetch failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Test 2: No-CORS mode (for POST requests)
+        async function testWithNoCors() {
+            resultDiv.innerHTML = '<div class="info">Sending test lead with no-cors mode...</div>';
+            
+            const testData = {
+                referenceNumber: 'NOCORS-' + Date.now(),
+                name: 'No-CORS Test',
+                email: 'test@example.com',
+                phone: '0400123456',
+                company: 'Test Corp',
+                projectType: 'Testing Integration',
+                timeline: 'ASAP',
+                budget: '$50k',
+                score: 75,
+                qualified: true,
+                conversation: [
+                    { role: 'user', content: 'Testing no-cors mode' }
+                ]
+            };
+            
+            try {
+                // With no-cors, we can't read the response, but the request should go through
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Request sent with no-cors mode!<br>
+                        Reference: ${testData.referenceNumber}<br>
+                        <strong>Check your Google Sheet now!</strong><br>
+                        <a href="https://docs.google.com/spreadsheets/d/12TaySxxboYefkcMFQmYxhgWUx1dyIQrc-QL13RDK2jQ/edit" target="_blank" style="color: #E94CFF;">Open Sheet</a>
+                    </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Test 3: Image trick (bypass CORS completely)
+        function testWithImage() {
+            resultDiv.innerHTML = '<div class="info">Sending via image trick...</div>';
+            
+            const testData = {
+                referenceNumber: 'IMG-' + Date.now(),
+                name: 'Image Test',
+                email: 'image@test.com',
+                phone: '0411111111',
+                company: 'Image Corp',
+                projectType: 'Image Method',
+                timeline: 'Now',
+                budget: '$25k',
+                score: 60,
+                qualified: true
+            };
+            
+            // Create an image element to bypass CORS
+            const img = new Image();
+            const params = new URLSearchParams();
+            params.append('data', JSON.stringify(testData));
+            
+            img.onload = function() {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Image method completed!<br>
+                        Reference: ${testData.referenceNumber}<br>
+                        <a href="https://docs.google.com/spreadsheets/d/12TaySxxboYefkcMFQmYxhgWUx1dyIQrc-QL13RDK2jQ/edit" target="_blank" style="color: #E94CFF;">Check Sheet</a>
+                    </div>`;
+            };
+            
+            img.onerror = function() {
+                // Even on "error", the request often goes through
+                resultDiv.innerHTML = `
+                    <div class="info">
+                        ⚠️ Image request completed (this is normal)<br>
+                        Reference: ${testData.referenceNumber}<br>
+                        <a href="https://docs.google.com/spreadsheets/d/12TaySxxboYefkcMFQmYxhgWUx1dyIQrc-QL13RDK2jQ/edit" target="_blank" style="color: #E94CFF;">Check Sheet</a>
+                    </div>`;
+            };
+            
+            // Trigger the request
+            img.src = WEBHOOK_URL + '?' + params.toString();
+        }
+        
+        // Test 4: Hidden form submission
+        function sendViaForm() {
+            resultDiv.innerHTML = '<div class="info">Sending via form submission...</div>';
+            
+            const testData = {
+                referenceNumber: 'FORM-' + Date.now(),
+                name: 'Form Test',
+                email: 'form@test.com',
+                phone: '0422222222',
+                company: 'Form Corp',
+                projectType: 'Form Method',
+                timeline: '1 month',
+                budget: '$100k',
+                score: 90,
+                qualified: true
+            };
+            
+            // Create a hidden iframe for the response
+            const iframe = document.createElement('iframe');
+            iframe.name = 'hidden_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            
+            // Create a form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = WEBHOOK_URL;
+            form.target = 'hidden_iframe';
+            
+            // Add data as a hidden field
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'data';
+            input.value = JSON.stringify(testData);
+            form.appendChild(input);
+            
+            // Submit the form
+            document.body.appendChild(form);
+            form.submit();
+            
+            // Clean up after submission
+            setTimeout(() => {
+                document.body.removeChild(form);
+                document.body.removeChild(iframe);
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Form submitted!<br>
+                        Reference: ${testData.referenceNumber}<br>
+                        <a href="https://docs.google.com/spreadsheets/d/12TaySxxboYefkcMFQmYxhgWUx1dyIQrc-QL13RDK2jQ/edit" target="_blank" style="color: #E94CFF;">Check Sheet</a>
+                    </div>`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

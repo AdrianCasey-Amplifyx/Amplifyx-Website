@@ -25,6 +25,7 @@ async function sendToGoogleSheets(leadData) {
             referenceNumber: leadData.referenceNumber || '',
             name: leadData.name || '',
             email: leadData.email || '',
+            phone: leadData.phone || '',  // Added phone field
             company: leadData.company || '',
             projectType: leadData.projectType || '',
             timeline: leadData.timeline || '',
@@ -112,6 +113,7 @@ async function testGoogleSheets() {
         referenceNumber: 'TEST-' + Date.now(),
         name: 'Test User',
         email: 'test@example.com',
+        phone: '0400123456',  // Added phone field
         company: 'Test Company',
         projectType: 'Integration Test',
         timeline: 'ASAP',
