@@ -176,24 +176,36 @@ demoButtons.forEach(button => {
             }
             
             if (demoType === 'automation') {
-                // Reset automation nodes animation
-                const aiNodes = targetScreen.querySelectorAll('.ai-node');
-                aiNodes.forEach((node, index) => {
-                    node.style.animation = 'none';
-                    setTimeout(() => {
-                        node.style.animation = 'nodeFloat 0.6s ease-out';
-                        node.style.animationDelay = `${index * 0.1}s`;
-                    }, 10);
-                });
-                
-                // Reset stats animation
+                // Animate stats counting up
                 const statValues = targetScreen.querySelectorAll('.stat-value');
                 statValues.forEach(stat => {
-                    stat.style.animation = 'none';
-                    setTimeout(() => {
-                        stat.style.animation = 'countUp 1s ease-out';
-                    }, 10);
+                    const targetValue = parseFloat(stat.getAttribute('data-value'));
+                    const isCounter = stat.classList.contains('counter');
+                    let currentValue = 0;
+                    const increment = targetValue / 50;
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= targetValue) {
+                            currentValue = targetValue;
+                            if (!isCounter) {
+                                clearInterval(timer);
+                            }
+                        }
+                        stat.textContent = Math.floor(currentValue);
+                    }, 30);
+                    
+                    // Store timer to clear when switching demos
+                    stat.dataset.timer = timer;
                 });
+                
+                // Continuous counter for "Tasks Today"
+                const counter = targetScreen.querySelector('.stat-value.counter');
+                if (counter) {
+                    setInterval(() => {
+                        let current = parseInt(counter.textContent);
+                        counter.textContent = current + Math.floor(Math.random() * 3) + 1;
+                    }, 2000);
+                }
             }
         }
     });
@@ -208,6 +220,17 @@ const demoCycle = setInterval(() => {
         demoButtons[currentDemoIndex].click();
     }
 }, 5000);
+
+// Start the automation animation on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Trigger automation demo after a short delay
+    setTimeout(() => {
+        const automationBtn = document.querySelector('.demo-btn[data-demo="automation"]');
+        if (automationBtn && !automationBtn.classList.contains('active')) {
+            // Will trigger on first cycle
+        }
+    }, 1000);
+});
 
 // Stop auto-cycle when user interacts
 demoButtons.forEach(button => {
