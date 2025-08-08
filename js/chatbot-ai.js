@@ -98,6 +98,7 @@ class ChatbotState {
             name: '',
             company: '',
             email: '',
+            phone: '',  // Added phone field
             projectType: '',
             timeline: '',
             budget: '',
@@ -112,6 +113,7 @@ class ChatbotState {
             name: false,
             company: false,
             email: false,
+            phone: false,  // Added phone field tracking
             projectType: false,
             timeline: false,
             budget: false
@@ -119,6 +121,8 @@ class ChatbotState {
         
         // Conversation state
         this.awaitingConfirmation = false;
+        this.awaitingUpdate = false;
+        this.submissionComplete = false;  // Track if already submitted
         this.conversationMode = 'ai'; // 'ai' or 'fallback'
     }
     
@@ -131,6 +135,7 @@ class ChatbotState {
             name: '',
             company: '',
             email: '',
+            phone: '',  // Added phone field
             projectType: '',
             timeline: '',
             budget: '',
@@ -143,11 +148,14 @@ class ChatbotState {
             name: false,
             company: false,
             email: false,
+            phone: false,  // Added phone field tracking
             projectType: false,
             timeline: false,
             budget: false
         };
         this.awaitingConfirmation = false;
+        this.awaitingUpdate = false;
+        this.submissionComplete = false;  // Reset submission flag
     }
     
     allFieldsCollected() {
@@ -317,6 +325,12 @@ async function handleSubmit(e) {
 
 // Process User Message
 async function processUserMessage(message) {
+    // Block messages after submission is complete
+    if (chatbotState.submissionComplete) {
+        addBotMessage("This conversation has been completed and your lead has been submitted. Please refresh the page to start a new conversation.");
+        return;
+    }
+    
     // Add to history
     chatbotState.conversationHistory.push({
         role: 'user',
@@ -483,8 +497,10 @@ async function handleAIConversation(message) {
         const hasMinimumFields = chatbotState.leadData.email && 
                                 (chatbotState.leadData.name || chatbotState.leadData.company);
         
-        if ((hasMinimumFields && (isAITryingToConfirm || isAITryingToClose)) || 
-            (chatbotState.allFieldsCollected() && !chatbotState.awaitingConfirmation)) {
+        // Only show confirmation if not already submitted or awaiting confirmation
+        if (!chatbotState.submissionComplete && !chatbotState.awaitingConfirmation &&
+            ((hasMinimumFields && (isAITryingToConfirm || isAITryingToClose)) || 
+            chatbotState.allFieldsCollected())) {
             console.log('Showing confirmation screen...');
             console.log('Reason: AI trying to confirm:', isAITryingToConfirm, 'AI trying to close:', isAITryingToClose);
             setTimeout(() => {
@@ -622,6 +638,18 @@ function extractFieldsFromAIResponse(response) {
 
 // Show Confirmation
 function showConfirmation() {
+    // Don't show confirmation if already submitted
+    if (chatbotState.submissionComplete) {
+        console.log('⚠️ Skipping confirmation - already submitted');
+        return;
+    }
+    
+    // Don't show confirmation multiple times
+    if (chatbotState.awaitingConfirmation) {
+        console.log('⚠️ Already awaiting confirmation');
+        return;
+    }
+    
     chatbotState.awaitingConfirmation = true;
     
     // Build confirmation message with available fields
@@ -738,6 +766,16 @@ function extractUpdateFromMessage(message) {
 
 // Complete Qualification
 async function completeQualification() {
+    // Prevent duplicate submissions
+    if (chatbotState.submissionComplete) {
+        console.log('⚠️ Submission already completed for this conversation');
+        addBotMessage("I've already submitted your information. Is there anything else I can help you with?");
+        return;
+    }
+    
+    // Mark as submitted BEFORE any async operations to prevent race conditions
+    chatbotState.submissionComplete = true;
+    
     // Calculate lead score
     chatbotState.leadData.score = calculateLeadScore();
     chatbotState.leadData.qualified = chatbotState.leadData.score >= 60;
@@ -749,10 +787,10 @@ async function completeQualification() {
     // Send email
     await sendLeadEmail();
     
-    // Thank you message
+    // Thank you message - make it clear the conversation is complete
     const message = chatbotState.leadData.qualified
-        ? `🎉 Perfect! Your information has been submitted successfully.\n\n**Reference Number:** ${referenceNumber}\n\nThank you, ${chatbotState.leadData.name || 'there'}! Based on our conversation, Amplifyx Technologies can definitely help accelerate your AI initiatives. Our team will reach out to you at **${chatbotState.leadData.email}** within 24 hours to discuss next steps.\n\nIs there anything else you'd like to know about our services?`
-        : `✅ Thank you for your interest in Amplifyx Technologies!\n\n**Reference Number:** ${referenceNumber}\n\nWe've received your information and our team will review your requirements. We'll contact you at **${chatbotState.leadData.email}** soon with the best way forward.\n\nFeel free to ask me any questions about our AI consulting services!`;
+        ? `🎉 Perfect! Your information has been submitted successfully.\n\n**Reference Number:** ${referenceNumber}\n\nThank you, ${chatbotState.leadData.name || 'there'}! Based on our conversation, Amplifyx Technologies can definitely help accelerate your AI initiatives. Our team will reach out to you at **${chatbotState.leadData.email}** within 24 hours to discuss next steps.\n\n**📝 This lead has been saved to our database.**\n**To start a new conversation, please refresh the page.**`
+        : `✅ Thank you for your interest in Amplifyx Technologies!\n\n**Reference Number:** ${referenceNumber}\n\nWe've received your information and our team will review your requirements. We'll contact you at **${chatbotState.leadData.email}** soon with the best way forward.\n\n**📝 This lead has been saved to our database.**\n**To start a new conversation, please refresh the page.**`;
     
     addBotMessage(message);
 }
