@@ -623,12 +623,41 @@ async function sendLeadEmail() {
     });
     localStorage.setItem('amplifyx_leads', JSON.stringify(leads));
     
-    // Send to Google Sheets if available
-    if (typeof sendToGoogleSheets === 'function') {
-        sendToGoogleSheets({
-            ...chatbotState.leadData,
+    // Send to Google Sheets
+    try {
+        // Direct implementation to avoid dependency issues
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec';
+        
+        const googlePayload = {
+            referenceNumber: chatbotState.leadData.referenceNumber,
+            name: chatbotState.leadData.name || '',
+            email: chatbotState.leadData.email || '',
+            company: chatbotState.leadData.company || '',
+            projectType: chatbotState.leadData.projectType || '',
+            timeline: chatbotState.leadData.timeline || '',
+            budget: chatbotState.leadData.budget || '',
+            score: chatbotState.leadData.score || 0,
+            qualified: chatbotState.leadData.qualified || false,
+            timestamp: new Date().toISOString(),
             conversation: chatbotState.conversationHistory
+        };
+        
+        fetch(GOOGLE_SHEETS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(googlePayload)
+        }).then(() => {
+            console.log('✅ Lead sent to Google Sheets');
+        }).catch(error => {
+            console.error('❌ Google Sheets error:', error);
         });
+        
+        console.log('📊 Sending to Google Sheets:', googlePayload);
+    } catch (error) {
+        console.error('Failed to send to Google Sheets:', error);
     }
     
     // Send email if EmailJS is configured
