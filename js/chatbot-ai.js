@@ -68,20 +68,20 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
    - The system will automatically add confirmation buttons after your message
 
 5. STRUCTURED DATA OUTPUT (HIDDEN)
-   When showing confirmation, include hidden structured data at the end:
+   When showing confirmation, ALWAYS include hidden structured data at the end with ALL fields (use null for missing):
    <!--STRUCTURED_DATA:
    {
-     "name": "Adrian",
+     "name": "Adrian Johns",
      "company": "Oncore Services",
-     "email": "adrian@example.com",
+     "email": "adrianjcasey@gmail.com",
      "phone": "0431481227",
-     "projectType": "AI Integration",
-     "timeline": "3 months",
-     "budget": "$25k",
-     "score": 75
+     "projectType": "AI Integration into systems like Jira and CRM",
+     "timeline": "Partner to lead the tech",
+     "budget": "$100k annual",
+     "score": 85
    }
    -->
-   This helps ensure accurate data capture for our database.
+   IMPORTANT: Include ALL fields even if null. Use exact field names. This ensures proper database capture.
 
 6. PROJECT EVALUATION (INTERNAL SCORING)
    Assess the project opportunity (1-100) based on:
@@ -495,35 +495,47 @@ async function handleAIConversation(message) {
         // Extract structured data if present
         const structuredDataMatch = aiResponse.match(/<!--STRUCTURED_DATA:([\s\S]*?)-->/);
         if (structuredDataMatch) {
+            console.log('🔍 FOUND STRUCTURED DATA IN AI RESPONSE');
             try {
                 const structuredData = JSON.parse(structuredDataMatch[1].trim());
-                console.log('Extracted structured data from AI:', structuredData);
+                console.log('📊 STRUCTURED DATA FROM AI:', structuredData);
                 
-                // Update lead data with AI's structured output
-                if (structuredData.name) chatbotState.leadData.name = structuredData.name;
-                if (structuredData.company) chatbotState.leadData.company = structuredData.company;
-                if (structuredData.email) chatbotState.leadData.email = structuredData.email;
-                if (structuredData.phone) chatbotState.leadData.phone = structuredData.phone;
-                if (structuredData.projectType) chatbotState.leadData.projectType = structuredData.projectType;
-                if (structuredData.timeline) chatbotState.leadData.timeline = structuredData.timeline;
-                if (structuredData.budget) chatbotState.leadData.budget = structuredData.budget;
-                if (structuredData.score) chatbotState.leadData.aiScore = structuredData.score;
+                // ALWAYS update ALL fields from structured data (even if null)
+                chatbotState.leadData.name = structuredData.name || chatbotState.leadData.name || '';
+                chatbotState.leadData.company = structuredData.company || chatbotState.leadData.company || '';
+                chatbotState.leadData.email = structuredData.email || chatbotState.leadData.email || '';
+                chatbotState.leadData.phone = structuredData.phone || chatbotState.leadData.phone || '';
+                chatbotState.leadData.projectType = structuredData.projectType || chatbotState.leadData.projectType || '';
+                chatbotState.leadData.timeline = structuredData.timeline || chatbotState.leadData.timeline || '';
+                chatbotState.leadData.budget = structuredData.budget || chatbotState.leadData.budget || '';
                 
-                // Mark fields as collected
-                if (structuredData.name) chatbotState.fieldsCollected.name = true;
-                if (structuredData.company) chatbotState.fieldsCollected.company = true;
-                if (structuredData.email) chatbotState.fieldsCollected.email = true;
-                if (structuredData.phone) chatbotState.fieldsCollected.phone = true;
-                if (structuredData.projectType) chatbotState.fieldsCollected.projectType = true;
-                if (structuredData.timeline) chatbotState.fieldsCollected.timeline = true;
-                if (structuredData.budget) chatbotState.fieldsCollected.budget = true;
+                // Store AI score
+                if (structuredData.score) {
+                    chatbotState.leadData.aiScore = structuredData.score;
+                    chatbotState.leadData.score = structuredData.score; // Use AI score directly
+                }
+                
+                // Mark all provided fields as collected
+                if (structuredData.name !== null && structuredData.name !== undefined) chatbotState.fieldsCollected.name = true;
+                if (structuredData.company !== null && structuredData.company !== undefined) chatbotState.fieldsCollected.company = true;
+                if (structuredData.email !== null && structuredData.email !== undefined) chatbotState.fieldsCollected.email = true;
+                if (structuredData.phone !== null && structuredData.phone !== undefined) chatbotState.fieldsCollected.phone = true;
+                if (structuredData.projectType !== null && structuredData.projectType !== undefined) chatbotState.fieldsCollected.projectType = true;
+                if (structuredData.timeline !== null && structuredData.timeline !== undefined) chatbotState.fieldsCollected.timeline = true;
+                if (structuredData.budget !== null && structuredData.budget !== undefined) chatbotState.fieldsCollected.budget = true;
+                
+                console.log('✅ LEAD DATA AFTER STRUCTURED UPDATE:', chatbotState.leadData);
                 
             } catch (e) {
-                console.error('Failed to parse structured data:', e);
+                console.error('❌ Failed to parse structured data:', e);
+                console.error('Raw data that failed:', structuredDataMatch[1]);
             }
             
             // Remove the structured data from the displayed message
             aiResponse = aiResponse.replace(/<!--STRUCTURED_DATA:[\s\S]*?-->/g, '');
+        } else {
+            console.log('⚠️ NO STRUCTURED DATA FOUND IN AI RESPONSE');
+            console.log('AI Response sample:', aiResponse.substring(0, 200));
         }
         
         addBotMessage(aiResponse);
@@ -540,11 +552,13 @@ async function handleAIConversation(message) {
             lowerResponse.includes('is everything correct') ||
             lowerResponse.includes('if that\'s everything correct') ||
             lowerResponse.includes('if that\'s correct') ||
-            lowerResponse.includes("if that's everything correct");
+            lowerResponse.includes("if that's everything correct") ||
+            lowerResponse.includes("i'll pass these details");
         
         // If AI is asking for confirmation, add buttons and set state
         if (isAIAskingForConfirmation && !chatbotState.submissionComplete && !chatbotState.awaitingConfirmation) {
-            console.log('AI is asking for confirmation - adding buttons');
+            console.log('✅ AI is asking for confirmation - adding buttons');
+            console.log('📋 Current Lead Data:', chatbotState.leadData);
             chatbotState.awaitingConfirmation = true;
             
             // Add confirmation buttons after a short delay
@@ -882,20 +896,34 @@ async function sendLeadEmail() {
         // Direct implementation to avoid dependency issues
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec';
         
+        // Ensure we have all the data from leadData
         const googlePayload = {
-            referenceNumber: chatbotState.leadData.referenceNumber,
-            name: chatbotState.leadData.name || '',
-            email: chatbotState.leadData.email || '',
-            phone: chatbotState.leadData.phone || '',
-            company: chatbotState.leadData.company || '',
-            projectType: chatbotState.leadData.projectType || '',
-            timeline: chatbotState.leadData.timeline || '',
-            budget: chatbotState.leadData.budget || '',
+            referenceNumber: chatbotState.leadData.referenceNumber || '',
+            name: chatbotState.leadData.name || null,
+            email: chatbotState.leadData.email || null,
+            phone: chatbotState.leadData.phone || null,
+            company: chatbotState.leadData.company || null,
+            projectType: chatbotState.leadData.projectType || null,
+            timeline: chatbotState.leadData.timeline || null,
+            budget: chatbotState.leadData.budget || null,
             score: chatbotState.leadData.score || 0,
             qualified: chatbotState.leadData.qualified || false,
             timestamp: new Date().toISOString(),
             conversation: chatbotState.conversationHistory
         };
+        
+        console.log('📤 PAYLOAD BEING SENT TO GOOGLE SHEETS:');
+        console.log('- Reference:', googlePayload.referenceNumber);
+        console.log('- Name:', googlePayload.name);
+        console.log('- Email:', googlePayload.email);
+        console.log('- Phone:', googlePayload.phone);
+        console.log('- Company:', googlePayload.company);
+        console.log('- Project Type:', googlePayload.projectType);
+        console.log('- Timeline:', googlePayload.timeline);
+        console.log('- Budget:', googlePayload.budget);
+        console.log('- Score:', googlePayload.score);
+        console.log('- Qualified:', googlePayload.qualified);
+        console.log('- Full Payload:', JSON.stringify(googlePayload, null, 2));
         
         fetch(GOOGLE_SHEETS_URL, {
             method: 'POST',
@@ -909,8 +937,6 @@ async function sendLeadEmail() {
         }).catch(error => {
             console.error('❌ Google Sheets error:', error);
         });
-        
-        console.log('📊 Sending to Google Sheets:', googlePayload);
     } catch (error) {
         console.error('Failed to send to Google Sheets:', error);
     }
