@@ -47,7 +47,7 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
    
    Phase 2: Contact Details
    - Email (essential)
-   - Phone (if offered)
+   - Phone (politely ask: "And could you share a phone number for follow-up?")
    
    Phase 3: Project Specifics
    - What exactly they need (in their words)
@@ -68,7 +68,7 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
    - The system will automatically add confirmation buttons after your message
 
 5. STRUCTURED DATA OUTPUT (HIDDEN)
-   When showing confirmation, ALWAYS include hidden structured data at the end with ALL fields (use null for missing):
+   When showing confirmation, ALWAYS include hidden structured data at the end with ALL fields:
    <!--STRUCTURED_DATA:
    {
      "name": "Adrian Johns",
@@ -81,7 +81,8 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
      "score": 85
    }
    -->
-   IMPORTANT: Include ALL fields even if null. Use exact field names. This ensures proper database capture.
+   CRITICAL: Include ALL 8 fields EVERY TIME. If phone wasn't provided, use "phone": "". Never omit fields.
+   Order MUST be: name, company, email, phone, projectType, timeline, budget, score.
 
 6. PROJECT EVALUATION (INTERNAL SCORING)
    Assess the project opportunity (1-100) based on:
@@ -500,10 +501,11 @@ async function handleAIConversation(message) {
                 const structuredData = JSON.parse(structuredDataMatch[1].trim());
                 console.log('📊 STRUCTURED DATA FROM AI:', structuredData);
                 
-                // ALWAYS update ALL fields from structured data (even if null)
+                // ALWAYS update ALL fields from structured data (ensure phone is never undefined)
                 chatbotState.leadData.name = structuredData.name || chatbotState.leadData.name || '';
                 chatbotState.leadData.company = structuredData.company || chatbotState.leadData.company || '';
                 chatbotState.leadData.email = structuredData.email || chatbotState.leadData.email || '';
+                // Phone must always have a value to prevent column shift
                 chatbotState.leadData.phone = structuredData.phone || chatbotState.leadData.phone || '';
                 chatbotState.leadData.projectType = structuredData.projectType || chatbotState.leadData.projectType || '';
                 chatbotState.leadData.timeline = structuredData.timeline || chatbotState.leadData.timeline || '';
@@ -896,16 +898,16 @@ async function sendLeadEmail() {
         // Direct implementation to avoid dependency issues
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec';
         
-        // Ensure we have all the data from leadData
+        // Ensure we have all the data from leadData - ALWAYS include phone even if empty
         const googlePayload = {
             referenceNumber: chatbotState.leadData.referenceNumber || '',
-            name: chatbotState.leadData.name || null,
-            email: chatbotState.leadData.email || null,
-            phone: chatbotState.leadData.phone || null,
-            company: chatbotState.leadData.company || null,
-            projectType: chatbotState.leadData.projectType || null,
-            timeline: chatbotState.leadData.timeline || null,
-            budget: chatbotState.leadData.budget || null,
+            name: chatbotState.leadData.name || '',
+            email: chatbotState.leadData.email || '',
+            phone: chatbotState.leadData.phone || 'Not provided',  // Always include phone field
+            company: chatbotState.leadData.company || '',
+            projectType: chatbotState.leadData.projectType || '',
+            timeline: chatbotState.leadData.timeline || '',
+            budget: chatbotState.leadData.budget || '',
             score: chatbotState.leadData.score || 0,
             qualified: chatbotState.leadData.qualified || false,
             timestamp: new Date().toISOString(),

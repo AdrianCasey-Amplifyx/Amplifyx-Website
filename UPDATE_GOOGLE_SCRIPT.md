@@ -1,7 +1,7 @@
-# URGENT: Update Google Apps Script
+# URGENT: Update Google Apps Script (Version 2)
 
 ## The Issue
-Your Google Sheet is receiving data with misaligned columns because the script doesn't include the phone field. The phone number is appearing in the Company column, and everything after is shifted left by one column.
+When phone number is not provided, data shifts left causing misalignment. Company appears in Phone column, Project Type in Company column, etc.
 
 ## How to Fix
 

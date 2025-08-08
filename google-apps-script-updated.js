@@ -22,7 +22,7 @@ function doPost(e) {
       data.referenceNumber || '',            // B: Reference
       data.name || '',                       // C: Name
       data.email || '',                      // D: Email
-      data.phone || '',                      // E: Phone (NEW)
+      data.phone || 'Not provided',          // E: Phone (ALWAYS include to prevent shift)
       data.company || '',                    // F: Company
       data.projectType || '',                // G: Project Type
       data.timeline || '',                   // H: Timeline
