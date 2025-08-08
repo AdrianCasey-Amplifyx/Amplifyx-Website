@@ -48,7 +48,7 @@ IMPORTANT RULES:
 4. Never discuss: personal topics, competitors, general advice unrelated to business
 5. Always emphasize Amplifyx's core offerings: AI integration, rapid prototyping, fractional CTO services, AI research, automation
 6. Extract information naturally - don't make it feel like an interrogation
-7. When you have enough information, let the user know you'll need to confirm their details
+7. CRITICAL: When you have collected name, email, and company/project details, you MUST say: "Perfect! Let me confirm the details I've collected before we proceed." DO NOT say you'll email them or that someone will contact them until AFTER confirmation
 
 CONVERSATION STYLE:
 - Use "we" when referring to Amplifyx Technologies
@@ -408,7 +408,7 @@ async function handleAIConversation(message) {
         console.log('Fields collected:', chatbotState.fieldsCollected);
         console.log('Lead data:', chatbotState.leadData);
         
-        // Check if AI is trying to confirm but we'll force it if we have key fields
+        // Check if AI is trying to confirm OR wrap up the conversation
         const lowerResponse = aiResponse.toLowerCase();
         const isAITryingToConfirm = 
             lowerResponse.includes('let me confirm') ||
@@ -416,15 +416,28 @@ async function handleAIConversation(message) {
             lowerResponse.includes('confirming') ||
             lowerResponse.includes('is this correct') ||
             lowerResponse.includes('is everything correct') ||
-            lowerResponse.includes('before we proceed');
+            lowerResponse.includes('before we proceed') ||
+            lowerResponse.includes("i've collected") ||
+            lowerResponse.includes("details i've") ||
+            lowerResponse.includes('perfect!');
         
-        // Show confirmation if we have minimum required fields OR if AI is trying to confirm
+        // Also check if AI is trying to send emails (should trigger confirmation first)
+        const isAITryingToClose = 
+            lowerResponse.includes('will email') ||
+            lowerResponse.includes('will contact') ||
+            lowerResponse.includes('will reach out') ||
+            lowerResponse.includes('team will') ||
+            lowerResponse.includes('someone will') ||
+            lowerResponse.includes('adrian will');
+        
+        // Show confirmation if we have minimum required fields
         const hasMinimumFields = chatbotState.leadData.email && 
                                 (chatbotState.leadData.name || chatbotState.leadData.company);
         
-        if ((hasMinimumFields && isAITryingToConfirm) || 
+        if ((hasMinimumFields && (isAITryingToConfirm || isAITryingToClose)) || 
             (chatbotState.allFieldsCollected() && !chatbotState.awaitingConfirmation)) {
             console.log('Showing confirmation screen...');
+            console.log('Reason: AI trying to confirm:', isAITryingToConfirm, 'AI trying to close:', isAITryingToClose);
             setTimeout(() => {
                 showConfirmation();
             }, 1500);
