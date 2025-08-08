@@ -2,14 +2,8 @@
 // This keeps your API key secure on Vercel's servers
 
 export default async function handler(req, res) {
-  // Enable CORS for your domain and localhost
-  const allowedOrigins = ['https://amplifyx.com.au', 'http://localhost', 'file://'];
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin) || origin?.startsWith('file://')) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', 'https://amplifyx.com.au');
-  }
+  // Enable CORS for all origins (temporary for testing)
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
