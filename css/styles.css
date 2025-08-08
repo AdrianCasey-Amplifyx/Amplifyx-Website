@@ -35,7 +35,9 @@ html {
     scroll-snap-type: y mandatory;
     scroll-padding-top: 80px;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale; /* Account for fixed navbar */
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 body {
@@ -44,6 +46,8 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     overflow-x: hidden;
+    max-width: 100vw;
+    position: relative;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -108,7 +112,7 @@ body {
 .nav-menu {
     display: flex;
     justify-content: center;
-    gap: 2.5rem;
+    gap: 1.5rem;
 }
 
 .nav-link {
@@ -1715,6 +1719,13 @@ body.loaded {
     .hero-visual {
         margin-top: var(--spacing-xl);
         max-width: 100%;
+        width: 100%;
+        padding: 0;
+    }
+    
+    .interactive-demo {
+        width: 100%;
+        max-width: 100%;
     }
     
     .demo-controls {
@@ -1761,70 +1772,104 @@ body.loaded {
     /* Disable snap scrolling on mobile for better usability */
     html {
         scroll-snap-type: none;
+        overflow-x: hidden;
+    }
+    
+    body {
+        overflow-x: hidden;
+        width: 100%;
     }
     
     section {
         min-height: auto;
         padding: var(--spacing-xl) 0;
+        overflow-x: hidden;
+        max-width: 100vw;
     }
     
     .hero {
         min-height: 100vh;
         height: auto;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        padding: 0 15px;
+        max-width: 100%;
     }
     
     /* AI Automation Demo - Mobile Layout */
+    .automation-builder {
+        position: relative;
+    }
+    
     .workflow-canvas {
         flex-direction: column;
-        padding: 20px;
-        gap: 10px;
+        padding: 15px;
+        gap: 8px;
+        min-height: 200px;
     }
     
     .workflow-stage {
-        min-width: 100px;
-        padding: 15px 12px;
+        min-width: 80px;
+        padding: 12px 10px;
+        gap: 6px;
     }
     
     .stage-icon {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .stage-label {
-        font-size: 10px;
+        font-size: 9px;
+        letter-spacing: 0.3px;
     }
     
     .flow-arrow {
         transform: rotate(90deg);
-        font-size: 20px;
+        font-size: 18px;
+        margin: -5px 0;
     }
     
     .automation-stats {
         flex-direction: row;
-        padding: 15px;
-        gap: 10px;
+        padding: 12px 10px;
+        gap: 5px;
+        justify-content: space-between;
+    }
+    
+    .stat-item {
+        flex: 1;
+        min-width: 0;
     }
     
     .stat-value {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .stat-label {
-        font-size: 9px;
+        font-size: 8px;
+        line-height: 1.2;
     }
     
     .live-indicator {
         top: 5px;
         right: 5px;
-        padding: 3px 8px;
+        padding: 2px 6px;
+        gap: 4px;
     }
     
     .live-text {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .live-dot {
-        width: 6px;
-        height: 6px;
+        width: 5px;
+        height: 5px;
+    }
+    
+    .demo-display {
+        height: 300px;
     }
     
     .nav-menu {
