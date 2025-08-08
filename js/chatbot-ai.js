@@ -404,8 +404,27 @@ async function handleAIConversation(message) {
         
         addBotMessage(aiResponse);
         
-        // Check again if we have all fields after AI response
-        if (chatbotState.allFieldsCollected() && !chatbotState.awaitingConfirmation) {
+        // Debug: Log what fields we have
+        console.log('Fields collected:', chatbotState.fieldsCollected);
+        console.log('Lead data:', chatbotState.leadData);
+        
+        // Check if AI is trying to confirm but we'll force it if we have key fields
+        const lowerResponse = aiResponse.toLowerCase();
+        const isAITryingToConfirm = 
+            lowerResponse.includes('let me confirm') ||
+            lowerResponse.includes('to confirm') ||
+            lowerResponse.includes('confirming') ||
+            lowerResponse.includes('is this correct') ||
+            lowerResponse.includes('is everything correct') ||
+            lowerResponse.includes('before we proceed');
+        
+        // Show confirmation if we have minimum required fields OR if AI is trying to confirm
+        const hasMinimumFields = chatbotState.leadData.email && 
+                                (chatbotState.leadData.name || chatbotState.leadData.company);
+        
+        if ((hasMinimumFields && isAITryingToConfirm) || 
+            (chatbotState.allFieldsCollected() && !chatbotState.awaitingConfirmation)) {
+            console.log('Showing confirmation screen...');
             setTimeout(() => {
                 showConfirmation();
             }, 1500);
@@ -469,7 +488,9 @@ function extractFieldsFromMessage(message) {
     // Name extraction (if message contains "I'm" or "My name is")
     const namePatterns = [
         /(?:i'm|i am|my name is|this is|call me)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
-        /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+here/i
+        /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+here/i,
+        /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)[,.\s]/i, // Name at start of sentence
+        /(?:it's|its)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i // "It's John"
     ];
     
     for (const pattern of namePatterns) {
