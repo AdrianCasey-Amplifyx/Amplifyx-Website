@@ -3,8 +3,8 @@
 
 // Configuration
 const CHATBOT_CONFIG = {
-    // OpenAI settings
-    apiEndpoint: 'https://api.openai.com/v1/chat/completions',
+    // OpenAI settings - uses proxy if available, direct API otherwise
+    apiEndpoint: window.AMPLIFYX_CONFIG?.apiProxyUrl || 'https://api.openai.com/v1/chat/completions',
     model: 'gpt-3.5-turbo',
     maxTokens: 200,
     temperature: 0.7,
@@ -228,9 +228,11 @@ function toggleChat() {
 async function initConversation() {
     chatbotMessages.innerHTML = '';
     
-    // Check if we have an API key
-    if (chatbotState.apiKey) {
-        // Start AI conversation
+    // Check if we have an API key OR a proxy endpoint
+    const hasProxy = window.AMPLIFYX_CONFIG?.apiProxyUrl;
+    
+    if (chatbotState.apiKey || hasProxy) {
+        // Start AI conversation (works with direct API or proxy)
         chatbotState.conversationMode = 'ai';
         await startAIConversation();
     } else {
@@ -330,13 +332,19 @@ async function handleAIConversation(message) {
             contextMessage = `\n\n[Context: Still need to collect: ${missingFields.join(', ')}. Work these into the conversation naturally.]`;
         }
         
-        // Make API call
+        // Make API call (works with proxy or direct)
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        
+        // Only add Authorization header if using direct API (not proxy)
+        if (!CHATBOT_CONFIG.apiEndpoint.includes('vercel.app') && chatbotState.apiKey) {
+            headers['Authorization'] = `Bearer ${chatbotState.apiKey}`;
+        }
+        
         const response = await fetch(CHATBOT_CONFIG.apiEndpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${chatbotState.apiKey}`
-            },
+            headers: headers,
             body: JSON.stringify({
                 model: CHATBOT_CONFIG.model,
                 messages: [
