@@ -701,11 +701,29 @@
             // If config.js doesn't exist, load public config
             var fallbackScript = document.createElement('script');
             fallbackScript.src = 'js/config-public.js';
+            fallbackScript.onload = function() {
+                // Config loaded, now load other scripts
+                loadMainScripts();
+            };
             document.head.appendChild(fallbackScript);
         };
+        script.onload = function() {
+            // Config loaded, now load other scripts
+            loadMainScripts();
+        };
         document.head.appendChild(script);
+        
+        function loadMainScripts() {
+            // Load main.js
+            var mainScript = document.createElement('script');
+            mainScript.src = 'js/main.js';
+            document.body.appendChild(mainScript);
+            
+            // Load chatbot-ai.js
+            var chatbotScript = document.createElement('script');
+            chatbotScript.src = 'js/chatbot-ai.js';
+            document.body.appendChild(chatbotScript);
+        }
     </script>
-    <script src="js/main.js" defer></script>
-    <script src="js/chatbot-ai.js" defer></script>
 </body>
 </html>

@@ -231,6 +231,12 @@ async function initConversation() {
     // Check if we have an API key OR a proxy endpoint
     const hasProxy = window.AMPLIFYX_CONFIG?.apiProxyUrl;
     
+    console.log('Checking AI availability:');
+    console.log('- Config object:', window.AMPLIFYX_CONFIG);
+    console.log('- Has proxy URL:', hasProxy);
+    console.log('- Has API key:', !!chatbotState.apiKey);
+    console.log('- API endpoint:', CHATBOT_CONFIG.apiEndpoint);
+    
     if (chatbotState.apiKey || hasProxy) {
         // Start AI conversation (works with direct API or proxy)
         chatbotState.conversationMode = 'ai';
@@ -336,35 +342,51 @@ async function handleAIConversation(message) {
             contextMessage = `\n\n[Context: Still need to collect: ${missingFields.join(', ')}. Work these into the conversation naturally.]`;
         }
         
+        // Determine the correct API endpoint (proxy or direct)
+        const apiEndpoint = window.AMPLIFYX_CONFIG?.apiProxyUrl || 
+                          (chatbotState.apiKey ? 'https://api.openai.com/v1/chat/completions' : null);
+        
+        if (!apiEndpoint) {
+            throw new Error('No API endpoint available');
+        }
+        
         // Make API call (works with proxy or direct)
         const headers = {
             'Content-Type': 'application/json'
         };
         
         // Only add Authorization header if using direct API (not proxy)
-        if (!CHATBOT_CONFIG.apiEndpoint.includes('vercel.app') && chatbotState.apiKey) {
+        if (!apiEndpoint.includes('vercel.app') && chatbotState.apiKey) {
             headers['Authorization'] = `Bearer ${chatbotState.apiKey}`;
         }
         
-        console.log('Making API request to:', CHATBOT_CONFIG.apiEndpoint);
-        const response = await fetch(CHATBOT_CONFIG.apiEndpoint, {
+        const requestBody = {
+            model: CHATBOT_CONFIG.model,
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT + contextMessage },
+                ...chatbotState.conversationHistory.slice(-10) // Last 10 messages for context
+            ],
+            max_tokens: CHATBOT_CONFIG.maxTokens,
+            temperature: CHATBOT_CONFIG.temperature
+        };
+        
+        console.log('Making API request:');
+        console.log('- URL:', apiEndpoint);
+        console.log('- Headers:', headers);
+        console.log('- Body:', JSON.stringify(requestBody, null, 2));
+        
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify({
-                model: CHATBOT_CONFIG.model,
-                messages: [
-                    { role: 'system', content: SYSTEM_PROMPT + contextMessage },
-                    ...chatbotState.conversationHistory.slice(-10) // Last 10 messages for context
-                ],
-                max_tokens: CHATBOT_CONFIG.maxTokens,
-                temperature: CHATBOT_CONFIG.temperature
-            })
+            body: JSON.stringify(requestBody)
         });
         
         console.log('API Response status:', response.status);
+        console.log('API Response headers:', response.headers);
+        
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('API Error Response:', errorText);
+            console.error('API Error Response body:', errorText);
             throw new Error(`API request failed: ${response.status}`);
         }
         
@@ -390,7 +412,11 @@ async function handleAIConversation(message) {
         }
         
     } catch (error) {
-        console.error('AI Error:', error);
+        console.error('AI Error Details:');
+        console.error('- Error message:', error.message);
+        console.error('- Error object:', error);
+        console.error('- API endpoint attempted:', window.AMPLIFYX_CONFIG?.apiProxyUrl || 'Direct OpenAI');
+        
         // Show error message and disable chat
         addBotMessage("Sorry, the AI agent encountered an error and is temporarily unavailable. Please try again later or contact us directly at adrian@amplifyx.com.au.");
         chatbotInput.disabled = true;

@@ -20,6 +20,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.OPENAI_API_KEY;
   
   if (!apiKey) {
+    console.error('OPENAI_API_KEY environment variable is not set');
     return res.status(500).json({ error: 'API key not configured' });
   }
 
@@ -34,9 +35,16 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    
+    // If OpenAI returns an error, pass it through with the same status
+    if (!response.ok) {
+      console.error('OpenAI API error response:', data);
+      return res.status(response.status).json(data);
+    }
+    
     res.status(200).json(data);
   } catch (error) {
     console.error('OpenAI API error:', error);
-    res.status(500).json({ error: 'Failed to process request' });
+    res.status(500).json({ error: 'Failed to process request', details: error.message });
   }
 }
