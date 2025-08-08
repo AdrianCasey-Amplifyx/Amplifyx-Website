@@ -228,9 +228,19 @@ function toggleChat() {
 async function initConversation() {
     chatbotMessages.innerHTML = '';
     
-    // Always start AI conversation - we have the API key built in
-    chatbotState.conversationMode = 'ai';
-    await startAIConversation();
+    // Check if we have an API key
+    if (chatbotState.apiKey) {
+        // Start AI conversation
+        chatbotState.conversationMode = 'ai';
+        await startAIConversation();
+    } else {
+        // Fallback mode - still professional and helpful
+        chatbotState.conversationMode = 'fallback';
+        addBotMessage(
+            "Welcome to Amplifyx Technologies! I'm here to help you explore how we can accelerate your product development with AI. What brings you here today?",
+            ["Need AI integration", "Rapid prototyping", "Fractional CTO services", "Just exploring"]
+        );
+    }
 }
 
 // Start AI Conversation

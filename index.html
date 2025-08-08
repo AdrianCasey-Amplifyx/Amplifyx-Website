@@ -692,7 +692,19 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="js/config.js"></script>
+    <!-- Load config with fallback -->
+    <script>
+        // Try to load private config, fallback to public if not available
+        var script = document.createElement('script');
+        script.src = 'js/config.js';
+        script.onerror = function() {
+            // If config.js doesn't exist, load public config
+            var fallbackScript = document.createElement('script');
+            fallbackScript.src = 'js/config-public.js';
+            document.head.appendChild(fallbackScript);
+        };
+        document.head.appendChild(script);
+    </script>
     <script src="js/main.js" defer></script>
     <script src="js/chatbot-ai.js" defer></script>
 </body>
