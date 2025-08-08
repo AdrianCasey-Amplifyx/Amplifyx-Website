@@ -79,14 +79,7 @@ CORE SERVICES TO HIGHLIGHT (when relevant):
 - Technical specifications and architecture
 - Product management and strategy
 
-REMEMBER: Every conversation is unique. Adapt your approach based on what they share, but ensure you collect the essential information for follow-up.`
-
-AMPLIFYX VALUE PROPOSITIONS TO EMPHASIZE:
-- We help ship products in weeks, not quarters
-- Onshore talent at fraction of traditional cost
-- Expert AI integration without the learning curve
-- From concept to production seamlessly
-- De-risk AI investments with proof of concepts`;
+REMEMBER: Every conversation is unique. Adapt your approach based on what they share, but ensure you collect the essential information for follow-up.`;
 
 // Chatbot State Management
 class ChatbotState {
@@ -586,7 +579,6 @@ function extractFieldsFromMessage(message) {
     ];
     
     // Special handling for messages with company and email together
-    const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('@') && !chatbotState.fieldsCollected.company) {
         // Look for company name before the email
         const beforeEmail = message.split(/[\s,]+(?=\S+@)/)[0];
