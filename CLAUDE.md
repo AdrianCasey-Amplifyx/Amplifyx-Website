@@ -67,8 +67,8 @@ vercel --prod
 vercel env add OPENAI_API_KEY production
 ```
 
-### IMPORTANT: Always Push AI Changes to GitHub
-**Any changes to the AI chatbot files MUST be pushed to GitHub for the live site to update:**
+### IMPORTANT: Always Push AI Changes to GitHub Using CLI
+**Any changes to the AI chatbot files MUST be pushed to GitHub using the command line for the live site to update:**
 ```bash
 # After making AI-related changes to any of these files:
 # - js/chatbot-ai.js
@@ -76,11 +76,13 @@ vercel env add OPENAI_API_KEY production
 # - index.html
 # - api/chat.js
 
+# ALWAYS use these CLI commands to push changes:
 git add .
 git commit -m "Update AI chatbot [describe changes]"
 git push origin main
 
 # GitHub Pages will automatically deploy within 2-3 minutes
+# Do NOT rely on any other method - use the CLI to ensure changes are deployed
 ```
 
 ## Critical Implementation Details
