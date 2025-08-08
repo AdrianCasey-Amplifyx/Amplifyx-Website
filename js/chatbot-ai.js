@@ -623,6 +623,14 @@ async function sendLeadEmail() {
     });
     localStorage.setItem('amplifyx_leads', JSON.stringify(leads));
     
+    // Send to Google Sheets if available
+    if (typeof sendToGoogleSheets === 'function') {
+        sendToGoogleSheets({
+            ...chatbotState.leadData,
+            conversation: chatbotState.conversationHistory
+        });
+    }
+    
     // Send email if EmailJS is configured
     if (chatbotState.emailJSConfigured && typeof emailjs !== 'undefined') {
         try {
