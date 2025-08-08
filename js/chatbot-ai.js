@@ -5,8 +5,8 @@
 const CHATBOT_CONFIG = {
     // OpenAI settings - uses proxy if available, direct API otherwise
     apiEndpoint: window.AMPLIFYX_CONFIG?.apiProxyUrl || 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-3.5-turbo',
-    maxTokens: 200,
+    model: 'gpt-4o-mini', // Upgraded for better understanding
+    maxTokens: 250,
     temperature: 0.7,
     
     // EmailJS settings (TO BE CONFIGURED)
@@ -30,32 +30,56 @@ const CHATBOT_CONFIG = {
     recipientEmail: 'adrian@amplifyx.com.au'
 };
 
-// System prompt for AI with strict guard rails
-const SYSTEM_PROMPT = `You are a professional lead qualification assistant for Amplifyx Technologies, an AI consultancy that helps companies with rapid prototyping, AI integration, and fractional product leadership.
+// System prompt for AI with systematic yet flexible approach
+const SYSTEM_PROMPT = `You are a professional lead qualification assistant for Amplifyx Technologies, an AI consultancy specializing in rapid prototyping, AI integration, fractional product leadership, and technical innovation.
 
-YOUR PRIMARY GOAL: Qualify leads by naturally collecting the following information through conversation:
-- Name
-- Company/Organization
-- Email address
-- Project type or AI needs
-- Timeline for implementation
-- Budget range
+YOUR APPROACH: Follow a systematic but natural conversation flow:
 
-IMPORTANT RULES:
-1. Be professional, friendly, and enthusiastic about AI and product development
-2. Keep ALL conversations focused on Amplifyx's services and the client's business needs
-3. If asked about unrelated topics, politely redirect: "I appreciate your question, but I'm specifically here to help you explore how Amplifyx Technologies can accelerate your product development with AI. What aspect of AI integration interests you most?"
-4. Never discuss: personal topics, competitors, general advice unrelated to business
-5. Always emphasize Amplifyx's core offerings: AI integration, rapid prototyping, fractional CTO services, AI research, automation
-6. Extract information naturally - don't make it feel like an interrogation
-7. CRITICAL: When you have collected name, email, and company/project details, you MUST say: "Perfect! Let me confirm the details I've collected before we proceed." DO NOT say you'll email them or that someone will contact them until AFTER confirmation
+1. UNDERSTAND THEIR NEED FIRST
+   - Listen to what they actually want (don't assume)
+   - Identify their specific challenge or goal
+   - Show you understand by reflecting back their need
 
-CONVERSATION STYLE:
-- Use "we" when referring to Amplifyx Technologies
-- Be conversational but professional
-- Show genuine interest in their project
-- Ask follow-up questions based on their responses
-- Validate their challenges and explain how Amplifyx can help
+2. GATHER INFORMATION PROGRESSIVELY
+   Phase 1: Identity & Context
+   - Who they are (name and/or company)
+   - Their role or relationship to the project
+   
+   Phase 2: Contact Details
+   - Email (essential)
+   - Phone (if offered)
+   
+   Phase 3: Project Specifics
+   - What exactly they need (in their words)
+   - Timeline/urgency
+   - Budget (if comfortable sharing)
+
+3. SMART EXTRACTION RULES
+   - If someone provides multiple pieces of info at once (e.g., "OnCore Services. adrianjcasey@gmail.com 0431481227"), acknowledge ALL of it
+   - Extract names from email addresses if not explicitly provided
+   - Don't re-ask for information already given
+   - Accept information in any order
+
+4. CONFIRMATION PROTOCOL
+   - When you have email + name/company + project understanding, say: "Based on our conversation, let me confirm what I've captured..."
+   - Show ONLY the information you actually collected (don't show empty fields)
+   - NEVER mention "someone will contact you" until AFTER they confirm
+
+5. CONVERSATION GUIDELINES
+   - Be conversational and natural, not robotic
+   - Show enthusiasm for their specific project
+   - Use their actual words when summarizing (not generic terms)
+   - If they seem to be a tech lead/developer, be more technical
+   - If they're business-focused, emphasize outcomes and ROI
+
+CORE SERVICES TO HIGHLIGHT (when relevant):
+- Rapid MVP development (weeks, not quarters)
+- AI integration and automation
+- Fractional CTO/CPO services
+- Technical specifications and architecture
+- Product management and strategy
+
+REMEMBER: Every conversation is unique. Adapt your approach based on what they share, but ensure you collect the essential information for follow-up.`
 
 AMPLIFYX VALUE PROPOSITIONS TO EMPHASIZE:
 - We help ship products in weeks, not quarters
@@ -315,6 +339,13 @@ async function processUserMessage(message) {
         return;
     } else if (chatbotState.awaitingConfirmation) {
         await handleConfirmation(message);
+    } else if (chatbotState.awaitingUpdate) {
+        // Handle updates
+        extractUpdateFromMessage(message);
+        chatbotState.awaitingUpdate = false;
+        setTimeout(() => {
+            showConfirmation();
+        }, 1000);
     } else if (chatbotState.conversationMode === 'ai') {
         await handleAIConversation(message);
     }
@@ -327,6 +358,31 @@ async function handleAIConversation(message) {
     
     // Extract fields from message
     extractFieldsFromMessage(message);
+    
+    // Extract project type from conversation context if not set
+    if (!chatbotState.leadData.projectType && message.length > 10) {
+        const lowerMessage = message.toLowerCase();
+        
+        // Look for specific project mentions
+        if (lowerMessage.includes('product manager') || lowerMessage.includes('pm')) {
+            chatbotState.leadData.projectType = 'Product Management';
+        } else if (lowerMessage.includes('chatbot') || lowerMessage.includes('chat bot')) {
+            chatbotState.leadData.projectType = 'AI Chatbot';
+        } else if (lowerMessage.includes('prototype') || lowerMessage.includes('mvp')) {
+            chatbotState.leadData.projectType = 'Rapid Prototyping';
+        } else if (lowerMessage.includes('cto') || lowerMessage.includes('technical lead')) {
+            chatbotState.leadData.projectType = 'Fractional CTO';
+        } else if (lowerMessage.includes('ai') || lowerMessage.includes('machine learning')) {
+            chatbotState.leadData.projectType = 'AI Integration';
+        } else if (lowerMessage.includes('specs') || lowerMessage.includes('requirements')) {
+            chatbotState.leadData.projectType = 'Requirements & Specifications';
+        }
+        
+        // If we found a project type, mark it as collected
+        if (chatbotState.leadData.projectType) {
+            chatbotState.fieldsCollected.projectType = true;
+        }
+    }
     
     // Check if we have all required fields
     if (chatbotState.allFieldsCollected() && !chatbotState.awaitingConfirmation) {
@@ -498,12 +554,11 @@ function extractFieldsFromMessage(message) {
         chatbotState.fieldsCollected.budget = true;
     }
     
-    // Name extraction (if message contains "I'm" or "My name is")
+    // Name extraction - only when explicitly stated
     const namePatterns = [
         /(?:i'm|i am|my name is|this is|call me)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
         /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+here/i,
-        /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)[,.\s]/i, // Name at start of sentence
-        /(?:it's|its)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i // "It's John"
+        /(?:it's|its)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+(?:from|at|with)/i // "It's John from..."
     ];
     
     for (const pattern of namePatterns) {
@@ -515,18 +570,45 @@ function extractFieldsFromMessage(message) {
         }
     }
     
-    // Company extraction
+    // Phone number extraction (Australian and international formats)
+    const phoneRegex = /(?:\+?61|0)?4\d{8}|\d{10}|\+\d{1,3}\s?\d{4,14}/;
+    const phoneMatch = message.match(phoneRegex);
+    if (phoneMatch && !chatbotState.leadData.phone) {
+        chatbotState.leadData.phone = phoneMatch[0];
+    }
+    
+    // Company extraction - improved to handle various formats
     const companyPatterns = [
         /(?:work at|from|with|represent|ceo of|founder of|work for)\s+([A-Z][A-Za-z0-9\s&.]+)/i,
-        /(?:company|startup|business|organization) (?:is |called |named )?([A-Z][A-Za-z0-9\s&.]+)/i
+        /(?:company|startup|business|organization) (?:is |called |named )?([A-Z][A-Za-z0-9\s&.]+)/i,
+        /^([A-Z][A-Za-z0-9\s&.]+)\.\s+[\w@]/i, // "OnCore Services. email@..."
+        /^([A-Z][A-Za-z0-9\s&.]+)(?:\s+services|\s+industries|\s+solutions|\s+technologies)/i // Company with common suffixes
     ];
     
-    for (const pattern of companyPatterns) {
-        const companyMatch = message.match(pattern);
-        if (companyMatch && !chatbotState.fieldsCollected.company) {
-            chatbotState.leadData.company = companyMatch[1].trim();
-            chatbotState.fieldsCollected.company = true;
-            break;
+    // Special handling for messages with company and email together
+    const lowerMessage = message.toLowerCase();
+    if (lowerMessage.includes('@') && !chatbotState.fieldsCollected.company) {
+        // Look for company name before the email
+        const beforeEmail = message.split(/[\s,]+(?=\S+@)/)[0];
+        if (beforeEmail && beforeEmail.length > 2) {
+            // Clean up and use as company name if it looks like one
+            const cleanCompany = beforeEmail.replace(/[.,\s]+$/, '').trim();
+            if (cleanCompany && /^[A-Z]/i.test(cleanCompany) && !cleanCompany.includes('@')) {
+                chatbotState.leadData.company = cleanCompany;
+                chatbotState.fieldsCollected.company = true;
+            }
+        }
+    }
+    
+    // Try patterns if company not found yet
+    if (!chatbotState.fieldsCollected.company) {
+        for (const pattern of companyPatterns) {
+            const companyMatch = message.match(pattern);
+            if (companyMatch) {
+                chatbotState.leadData.company = companyMatch[1].trim();
+                chatbotState.fieldsCollected.company = true;
+                break;
+            }
         }
     }
 }
@@ -550,17 +632,37 @@ function extractFieldsFromAIResponse(response) {
 function showConfirmation() {
     chatbotState.awaitingConfirmation = true;
     
+    // Build confirmation message with available fields
+    let fields = [];
+    
+    if (chatbotState.leadData.name) {
+        fields.push(`📝 **Name:** ${chatbotState.leadData.name}`);
+    }
+    if (chatbotState.leadData.company) {
+        fields.push(`🏢 **Company:** ${chatbotState.leadData.company}`);
+    }
+    if (chatbotState.leadData.email) {
+        fields.push(`📧 **Email:** ${chatbotState.leadData.email}`);
+    }
+    if (chatbotState.leadData.phone) {
+        fields.push(`📱 **Phone:** ${chatbotState.leadData.phone}`);
+    }
+    if (chatbotState.leadData.projectType) {
+        fields.push(`🚀 **Project:** ${chatbotState.leadData.projectType}`);
+    }
+    if (chatbotState.leadData.timeline) {
+        fields.push(`⏱️ **Timeline:** ${chatbotState.leadData.timeline}`);
+    }
+    if (chatbotState.leadData.budget) {
+        fields.push(`💰 **Budget:** ${chatbotState.leadData.budget}`);
+    }
+    
     const confirmationMessage = `
-Excellent! Let me confirm the information I've collected:
+Based on our conversation, here's what I've captured:
 
-📝 **Name:** ${chatbotState.leadData.name || '[Not provided]'}
-🏢 **Company:** ${chatbotState.leadData.company || '[Not provided]'}
-📧 **Email:** ${chatbotState.leadData.email || '[Not provided]'}
-🚀 **Project:** ${chatbotState.leadData.projectType || 'AI Integration'}
-⏱️ **Timeline:** ${chatbotState.leadData.timeline || '[Not provided]'}
-💰 **Budget:** ${chatbotState.leadData.budget || '[To be discussed]'}
+${fields.join('\n')}
 
-Is everything correct?`;
+Is this information correct?`;
     
     setTimeout(() => {
         addBotMessage(confirmationMessage, [
@@ -578,10 +680,68 @@ async function handleConfirmation(message) {
         chatbotState.leadData.confirmed = true;
         chatbotState.awaitingConfirmation = false;
         await completeQualification();
-    } else {
+    } else if (lowerMessage.includes('update') || lowerMessage.includes('📝')) {
+        // User wants to update something
         chatbotState.awaitingConfirmation = false;
-        addBotMessage("No problem! What would you like to update? Just type the correct information and I'll update it for you.");
+        chatbotState.awaitingUpdate = true;
+        addBotMessage("What would you like to update? You can say things like:\n• 'My company is XYZ Corp'\n• 'Email is john@example.com'\n• 'Timeline is next month'\nJust type the correct information.");
+    } else {
+        // Try to extract updates from the message itself
+        const updateExtracted = extractUpdateFromMessage(message);
+        
+        if (updateExtracted) {
+            // Show updated confirmation
+            setTimeout(() => {
+                showConfirmation();
+            }, 1000);
+        } else {
+            chatbotState.awaitingUpdate = true;
+            addBotMessage("I'll update that for you. Please provide the correct information.");
+        }
     }
+}
+
+// Extract updates from correction messages
+function extractUpdateFromMessage(message) {
+    let updated = false;
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for company updates
+    if (lowerMessage.includes('company') || lowerMessage.includes('work at')) {
+        const companyMatch = message.match(/(?:company is|work at|from)\s+([A-Z][A-Za-z0-9\s&.]+)/i);
+        if (companyMatch) {
+            chatbotState.leadData.company = companyMatch[1].trim();
+            chatbotState.fieldsCollected.company = true;
+            updated = true;
+        }
+    }
+    
+    // Check for name updates
+    if (lowerMessage.includes('name is') || lowerMessage.includes("i'm")) {
+        const nameMatch = message.match(/(?:name is|i'm|i am)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
+        if (nameMatch) {
+            chatbotState.leadData.name = nameMatch[1].trim();
+            chatbotState.fieldsCollected.name = true;
+            updated = true;
+        }
+    }
+    
+    // Check for email updates
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    const emailMatch = message.match(emailRegex);
+    if (emailMatch) {
+        chatbotState.leadData.email = emailMatch[0];
+        chatbotState.fieldsCollected.email = true;
+        updated = true;
+    }
+    
+    // Check for timeline updates
+    if (lowerMessage.includes('timeline') || lowerMessage.includes('start') || lowerMessage.includes('need')) {
+        extractFieldsFromMessage(message); // Reuse existing extraction
+        updated = true;
+    }
+    
+    return updated;
 }
 
 // Complete Qualification
@@ -666,6 +826,7 @@ async function sendLeadEmail() {
             referenceNumber: chatbotState.leadData.referenceNumber,
             name: chatbotState.leadData.name || '',
             email: chatbotState.leadData.email || '',
+            phone: chatbotState.leadData.phone || '',
             company: chatbotState.leadData.company || '',
             projectType: chatbotState.leadData.projectType || '',
             timeline: chatbotState.leadData.timeline || '',
