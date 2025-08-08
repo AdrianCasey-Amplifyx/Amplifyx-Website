@@ -31,7 +31,7 @@ const CHATBOT_CONFIG = {
 };
 
 // System prompt for AI with systematic yet flexible approach
-const SYSTEM_PROMPT = `You are a professional lead qualification assistant for Amplifyx Technologies, an AI consultancy specializing in rapid prototyping, AI integration, fractional product leadership, and technical innovation.
+const SYSTEM_PROMPT = `You are a professional consultation assistant for Amplifyx Technologies, an AI consultancy specializing in rapid prototyping, AI integration, fractional product leadership, and technical innovation.
 
 YOUR APPROACH: Follow a systematic but natural conversation flow:
 
@@ -60,17 +60,32 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
    - Don't re-ask for information already given
    - Accept information in any order
 
-4. CONFIRMATION PROTOCOL
-   - When you have email + name/company + project understanding, say: "Based on our conversation, let me confirm what I've captured..."
-   - Show ONLY the information you actually collected (don't show empty fields)
-   - NEVER mention "someone will contact you" until AFTER they confirm
+4. ELEGANT CONFIRMATION PROTOCOL
+   - When you have enough information, naturally confirm: "Perfect! I've got all the information I need. Let me confirm what I've captured..."
+   - Display the details in a clean format with appropriate emojis
+   - End with: "If that's everything correct, I'll pass these details to our team and they'll be in touch with you shortly to discuss how we can help with your [specific project type]."
+   - NEVER say "someone will contact" before confirmation
 
-5. CONVERSATION GUIDELINES
-   - Be conversational and natural, not robotic
-   - Show enthusiasm for their specific project
-   - Use their actual words when summarizing (not generic terms)
-   - If they seem to be a tech lead/developer, be more technical
-   - If they're business-focused, emphasize outcomes and ROI
+5. PROJECT EVALUATION (INTERNAL ONLY)
+   After gathering information, internally assess the project opportunity (1-100):
+   - Budget size (larger = higher score)
+   - Timeline urgency (ASAP/urgent = higher score)
+   - Project complexity/fit with our services (better fit = higher score)
+   - Clear decision-making authority (confirmed = higher score)
+   Include this score in a hidden comment: <!--PROJECT_SCORE:75-->
+
+6. CONVERSATION GUIDELINES
+   - Be consultative and professional, not salesy
+   - Show genuine interest in their project
+   - Use their actual words when summarizing
+   - Avoid terms like "lead", "qualify", or "sales"
+   - Focus on "your project", "your requirements", "this opportunity"
+
+7. PROFESSIONAL CLOSURE
+   After confirmation, respond warmly:
+   "Excellent! I've passed your information to our team. Someone will reach out to you within 24 hours to discuss your [specific need] in detail. 
+   
+   Thank you for considering Amplifyx Technologies for your AI initiatives!"
 
 CORE SERVICES TO HIGHLIGHT (when relevant):
 - Rapid MVP development (weeks, not quarters)
@@ -79,7 +94,7 @@ CORE SERVICES TO HIGHLIGHT (when relevant):
 - Technical specifications and architecture
 - Product management and strategy
 
-REMEMBER: Every conversation is unique. Adapt your approach based on what they share, but ensure you collect the essential information for follow-up.`;
+REMEMBER: You're a consultant helping understand their needs, not a salesperson qualifying leads.`;
 
 // Chatbot State Management
 class ChatbotState {
@@ -327,7 +342,7 @@ async function handleSubmit(e) {
 async function processUserMessage(message) {
     // Block messages after submission is complete
     if (chatbotState.submissionComplete) {
-        addBotMessage("This conversation has been completed and your lead has been submitted. Please refresh the page to start a new conversation.");
+        addBotMessage("Thank you! This consultation has been completed and your project details have been forwarded to our team. To start a new inquiry, please refresh the page.");
         return;
     }
     
@@ -464,6 +479,16 @@ async function handleAIConversation(message) {
         
         // Extract any fields from AI's understanding
         extractFieldsFromAIResponse(aiResponse);
+        
+        // Extract AI's project score if present
+        const scoreMatch = aiResponse.match(/<!--PROJECT_SCORE:(\d+)-->/);
+        if (scoreMatch) {
+            const aiScore = parseInt(scoreMatch[1]);
+            chatbotState.leadData.aiScore = aiScore;
+            console.log('AI Project Score:', aiScore);
+            // Remove the score comment from the displayed message
+            aiResponse = aiResponse.replace(/<!--PROJECT_SCORE:\d+-->/g, '');
+        }
         
         addBotMessage(aiResponse);
         
@@ -636,7 +661,7 @@ function extractFieldsFromAIResponse(response) {
     // Add more patterns as needed
 }
 
-// Show Confirmation
+// Show Confirmation Buttons Only (AI handles the text)
 function showConfirmation() {
     // Don't show confirmation if already submitted
     if (chatbotState.submissionComplete) {
@@ -652,55 +677,59 @@ function showConfirmation() {
     
     chatbotState.awaitingConfirmation = true;
     
-    // Build confirmation message with available fields
-    let fields = [];
-    
-    if (chatbotState.leadData.name) {
-        fields.push(`📝 **Name:** ${chatbotState.leadData.name}`);
-    }
-    if (chatbotState.leadData.company) {
-        fields.push(`🏢 **Company:** ${chatbotState.leadData.company}`);
-    }
-    if (chatbotState.leadData.email) {
-        fields.push(`📧 **Email:** ${chatbotState.leadData.email}`);
-    }
-    if (chatbotState.leadData.phone) {
-        fields.push(`📱 **Phone:** ${chatbotState.leadData.phone}`);
-    }
-    if (chatbotState.leadData.projectType) {
-        fields.push(`🚀 **Project:** ${chatbotState.leadData.projectType}`);
-    }
-    if (chatbotState.leadData.timeline) {
-        fields.push(`⏱️ **Timeline:** ${chatbotState.leadData.timeline}`);
-    }
-    if (chatbotState.leadData.budget) {
-        fields.push(`💰 **Budget:** ${chatbotState.leadData.budget}`);
-    }
-    
-    const confirmationMessage = `
-Based on our conversation, here's what I've captured:
-
-${fields.join('\n')}
-
-Is this information correct?`;
-    
+    // Only add confirmation buttons - let AI handle the message display
+    // AI will show the captured details naturally in conversation
     setTimeout(() => {
-        addBotMessage(confirmationMessage, [
-            "Yes, looks good! ✅",
-            "I need to update something 📝"
-        ]);
+        // Just add the buttons without any text
+        addConfirmationButtons();
     }, 500);
+}
+
+// Add confirmation buttons without text
+function addConfirmationButtons() {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message bot';
+    
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'quick-actions';
+    actionsDiv.style.marginTop = '0'; // No gap since AI already showed the message
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'quick-action-btn';
+    confirmBtn.textContent = "Yes, that's correct ✅";
+    confirmBtn.onclick = () => {
+        chatbotInput.value = "Yes, that's correct ✅";
+        handleSubmit(new Event('submit'));
+    };
+    
+    const updateBtn = document.createElement('button');
+    updateBtn.className = 'quick-action-btn';
+    updateBtn.textContent = "I need to update something 📝";
+    updateBtn.onclick = () => {
+        chatbotInput.value = "I need to update something 📝";
+        handleSubmit(new Event('submit'));
+    };
+    
+    actionsDiv.appendChild(confirmBtn);
+    actionsDiv.appendChild(updateBtn);
+    messageDiv.appendChild(actionsDiv);
+    
+    chatbotMessages.appendChild(messageDiv);
+    scrollToBottom();
 }
 
 // Handle Confirmation
 async function handleConfirmation(message) {
     const lowerMessage = message.toLowerCase();
     
-    if (lowerMessage.includes('yes') || lowerMessage.includes('good') || lowerMessage.includes('✅')) {
+    if (lowerMessage.includes('yes') || lowerMessage.includes('correct') || lowerMessage.includes('good') || 
+        lowerMessage.includes('right') || lowerMessage.includes('perfect') || lowerMessage.includes('✅') ||
+        lowerMessage.includes("that's correct") || lowerMessage.includes("looks good")) {
         chatbotState.leadData.confirmed = true;
         chatbotState.awaitingConfirmation = false;
         await completeQualification();
-    } else if (lowerMessage.includes('update') || lowerMessage.includes('📝')) {
+    } else if (lowerMessage.includes('update') || lowerMessage.includes('change') || lowerMessage.includes('wrong') || 
+               lowerMessage.includes('incorrect') || lowerMessage.includes('📝')) {
         // User wants to update something
         chatbotState.awaitingConfirmation = false;
         chatbotState.awaitingUpdate = true;
@@ -776,8 +805,14 @@ async function completeQualification() {
     // Mark as submitted BEFORE any async operations to prevent race conditions
     chatbotState.submissionComplete = true;
     
-    // Calculate lead score
-    chatbotState.leadData.score = calculateLeadScore();
+    // Use AI score if available, otherwise calculate
+    if (chatbotState.leadData.aiScore) {
+        chatbotState.leadData.score = chatbotState.leadData.aiScore;
+        console.log('Using AI project score:', chatbotState.leadData.aiScore);
+    } else {
+        chatbotState.leadData.score = calculateLeadScore();
+        console.log('Using calculated score:', chatbotState.leadData.score);
+    }
     chatbotState.leadData.qualified = chatbotState.leadData.score >= 60;
     
     // Generate reference number
@@ -787,10 +822,10 @@ async function completeQualification() {
     // Send email
     await sendLeadEmail();
     
-    // Thank you message - make it clear the conversation is complete
+    // Professional completion message
     const message = chatbotState.leadData.qualified
-        ? `🎉 Perfect! Your information has been submitted successfully.\n\n**Reference Number:** ${referenceNumber}\n\nThank you, ${chatbotState.leadData.name || 'there'}! Based on our conversation, Amplifyx Technologies can definitely help accelerate your AI initiatives. Our team will reach out to you at **${chatbotState.leadData.email}** within 24 hours to discuss next steps.\n\n**📝 This lead has been saved to our database.**\n**To start a new conversation, please refresh the page.**`
-        : `✅ Thank you for your interest in Amplifyx Technologies!\n\n**Reference Number:** ${referenceNumber}\n\nWe've received your information and our team will review your requirements. We'll contact you at **${chatbotState.leadData.email}** soon with the best way forward.\n\n**📝 This lead has been saved to our database.**\n**To start a new conversation, please refresh the page.**`;
+        ? `🎉 Excellent! I've successfully passed your information to our team.\n\n**Reference Number:** ${referenceNumber}\n\nThank you, ${chatbotState.leadData.name || 'there'}! Based on our conversation about your ${chatbotState.leadData.projectType || 'AI project'}, someone from Amplifyx Technologies will reach out to you at **${chatbotState.leadData.email}** within 24 hours to discuss how we can help bring your vision to life.\n\nThank you for considering Amplifyx Technologies for your AI initiatives!\n\n*This consultation has been completed. To start a new inquiry, please refresh the page.*`
+        : `✅ Thank you for your interest in Amplifyx Technologies!\n\n**Reference Number:** ${referenceNumber}\n\nI've passed your project details to our team. Someone will review your requirements and reach out to you at **${chatbotState.leadData.email}** soon to discuss the best path forward.\n\nWe appreciate you taking the time to explore how we can help with your technology needs.\n\n*This consultation has been completed. To start a new inquiry, please refresh the page.*`;
     
     addBotMessage(message);
 }
