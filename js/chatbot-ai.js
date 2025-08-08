@@ -236,12 +236,14 @@ async function initConversation() {
         chatbotState.conversationMode = 'ai';
         await startAIConversation();
     } else {
-        // Fallback mode - still professional and helpful
-        chatbotState.conversationMode = 'fallback';
+        // No AI available - show professional error message
+        chatbotState.conversationMode = 'unavailable';
         addBotMessage(
-            "Welcome to Amplifyx Technologies! I'm here to help you explore how we can accelerate your product development with AI. What brings you here today?",
-            ["Need AI integration", "Rapid prototyping", "Fractional CTO services", "Just exploring"]
+            "Sorry, the AI agent is not available at this time. Please try again later or contact us directly at adrian@amplifyx.com.au for immediate assistance."
         );
+        // Disable input since AI is not available
+        chatbotInput.disabled = true;
+        chatbotInput.placeholder = "AI agent unavailable";
     }
 }
 
@@ -301,12 +303,14 @@ async function processUserMessage(message) {
     showTypingIndicator();
     
     // Handle based on conversation state
-    if (chatbotState.awaitingConfirmation) {
+    if (chatbotState.conversationMode === 'unavailable') {
+        // Don't process messages when AI is unavailable
+        hideTypingIndicator();
+        return;
+    } else if (chatbotState.awaitingConfirmation) {
         await handleConfirmation(message);
     } else if (chatbotState.conversationMode === 'ai') {
         await handleAIConversation(message);
-    } else {
-        await handleFallbackMode(message);
     }
     
     hideTypingIndicator();
@@ -383,8 +387,10 @@ async function handleAIConversation(message) {
         
     } catch (error) {
         console.error('AI Error:', error);
-        chatbotState.conversationMode = 'fallback';
-        addBotMessage("I'm having trouble with the AI connection. Let me help you directly. What specific AI challenge is your business facing?");
+        // Show error message and disable chat
+        addBotMessage("Sorry, the AI agent encountered an error and is temporarily unavailable. Please try again later or contact us directly at adrian@amplifyx.com.au.");
+        chatbotInput.disabled = true;
+        chatbotInput.placeholder = "AI agent unavailable";
     }
 }
 
@@ -623,44 +629,7 @@ async function sendLeadEmail() {
     }
 }
 
-// Handle Fallback Mode (no AI)
-async function handleFallbackMode(message) {
-    // Simple keyword-based responses for when AI is not available
-    const lowerMessage = message.toLowerCase();
-    
-    // Extract any fields we can
-    extractFieldsFromMessage(message);
-    
-    // Provide relevant information based on keywords
-    if (lowerMessage.includes('integration') || lowerMessage.includes('ai')) {
-        addBotMessage("Amplifyx specializes in seamless AI integration! We help businesses implement GPT-4, Claude, and custom models into existing products. Our team handles everything from API integration to custom model training. What specific AI capabilities are you looking to add?");
-    } else if (lowerMessage.includes('prototype') || lowerMessage.includes('mvp')) {
-        addBotMessage("We excel at rapid prototyping! Our team can build functional MVPs in 2-4 weeks using AI-powered development. We've helped startups go from idea to working prototype faster than traditional development. What kind of product are you looking to prototype?");
-    } else if (lowerMessage.includes('cto') || lowerMessage.includes('fractional')) {
-        addBotMessage("Our fractional CTO services give you senior technical leadership without the full-time cost. You get strategic guidance, architecture decisions, and team leadership from experienced CTOs who've built successful products. How large is your current team?");
-    } else if (lowerMessage.includes('cost') || lowerMessage.includes('price') || lowerMessage.includes('budget')) {
-        addBotMessage("Our pricing is tailored to your specific needs. Projects typically range from $10k for proof-of-concepts to $100k+ for full implementations. We offer flexible engagement models: project-based, monthly retainers, or fractional executive roles. What's your target budget range?");
-    } else {
-        // Check if we need more information
-        const missing = chatbotState.getMissingFields();
-        if (missing.includes('email') && !chatbotState.fieldsCollected.email) {
-            addBotMessage("To send you more detailed information about how Amplifyx can help, what's the best email to reach you at?");
-        } else if (missing.includes('name') && !chatbotState.fieldsCollected.name) {
-            addBotMessage("I'd love to learn more about your project! What's your name?");
-        } else if (missing.includes('company') && !chatbotState.fieldsCollected.company) {
-            addBotMessage("What company or project are you working on?");
-        } else {
-            addBotMessage("Amplifyx Technologies helps businesses leverage AI to ship products faster. We offer AI integration, rapid prototyping, and fractional CTO services. What specific challenge can we help you solve?");
-        }
-    }
-    
-    // Check if we have enough info for confirmation
-    if (chatbotState.fieldsCollected.email && chatbotState.fieldsCollected.name && !chatbotState.awaitingConfirmation) {
-        setTimeout(() => {
-            showConfirmation();
-        }, 1500);
-    }
-}
+// Fallback mode removed - AI only or unavailable message
 
 // Rate Limiting
 function checkRateLimit() {
