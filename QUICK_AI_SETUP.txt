@@ -1,0 +1,48 @@
+ENABLE AI ON YOUR LIVE CHATBOT - 5 MINUTES
+============================================
+
+Run these commands in Terminal:
+
+1. INSTALL VERCEL:
+   npm install -g vercel
+
+2. DEPLOY:
+   vercel
+
+   When prompted:
+   - Set up and deploy: Y
+   - Which scope: (select your account)
+   - Link to existing project: N
+   - Project name: amplifyx-chatbot
+   - Directory: ./
+   - Override settings: N
+
+3. ADD YOUR API KEY:
+   vercel env add OPENAI_API_KEY production
+
+   Then paste your key and press Enter
+
+4. DEPLOY TO PRODUCTION:
+   vercel --prod
+
+5. COPY YOUR URL:
+   You'll get something like: https://amplifyx-chatbot.vercel.app
+   
+6. TEST IT:
+   Open: https://amplifyx-chatbot.vercel.app/api/chat
+   Should show: {"error":"Method not allowed"}
+   That means it's working!
+
+7. UPDATE YOUR WEBSITE:
+   Edit js/config-public.js and add:
+   
+   apiProxyUrl: 'https://amplifyx-chatbot.vercel.app/api/chat',
+
+8. PUSH THE UPDATE:
+   git add js/config-public.js
+   git commit -m "Enable AI chatbot via Vercel proxy"
+   git push
+
+DONE! Your chatbot now has AI on the live site!
+
+Test at: https://amplifyx.com.au
