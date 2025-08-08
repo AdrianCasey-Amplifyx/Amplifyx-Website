@@ -4,7 +4,7 @@
 
 window.AMPLIFYX_CONFIG = window.AMPLIFYX_CONFIG || {
     // Vercel API proxy endpoint - enables AI for all visitors!
-    apiProxyUrl: 'https://amplifyx-chatbot-8fsl7iotd-adriancasey-amplifyxs-projects.vercel.app/api/chat',
+    apiProxyUrl: 'https://amplifyx-chatbot.vercel.app/api/chat',
     
     // EmailJS configuration (safe to expose - these are public IDs)
     emailJS: {
