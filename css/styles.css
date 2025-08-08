@@ -1782,15 +1782,22 @@ body.loaded {
     
     section {
         min-height: auto;
-        padding: var(--spacing-xl) 0;
+        padding: 100px 0 var(--spacing-xl);
+        padding-top: 100px !important;
         overflow-x: hidden;
         max-width: 100vw;
+        scroll-padding-top: 100px;
+    }
+    
+    .problem-section {
+        padding-top: 100px !important;
     }
     
     .hero {
         min-height: 100vh;
         height: auto;
         overflow-x: hidden;
+        padding-top: 80px;
     }
     
     .container {
@@ -1801,13 +1808,16 @@ body.loaded {
     /* AI Automation Demo - Mobile Layout */
     .automation-builder {
         position: relative;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     
     .workflow-canvas {
         flex-direction: column;
         padding: 15px;
         gap: 8px;
-        min-height: 200px;
+        min-height: 280px;
     }
     
     .workflow-stage {
@@ -1869,7 +1879,8 @@ body.loaded {
     }
     
     .demo-display {
-        height: 300px;
+        min-height: 480px;
+        height: auto;
     }
     
     .nav-menu {
