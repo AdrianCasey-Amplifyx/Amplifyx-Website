@@ -38,4 +38,4 @@ npm-debug.log*
 
 # Build outputs (if you add build tools later)
 dist/
-build/
+build/js/config.js

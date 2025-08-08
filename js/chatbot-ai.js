@@ -72,6 +72,7 @@ class ChatbotState {
         this.sessionStartTime = null;
         this.recentMessages = [];
         this.conversationHistory = [];
+        // API key will be set from environment or config
         this.apiKey = null;
         this.emailJSConfigured = false;
         
@@ -180,18 +181,22 @@ function initChatbot() {
 
 // Check API and EmailJS configurations
 function checkConfigurations() {
-    // Check for OpenAI API key
-    const storedKey = localStorage.getItem('openai_api_key');
-    if (storedKey) {
-        chatbotState.apiKey = storedKey;
+    // Load API key from config
+    if (window.AMPLIFYX_CONFIG && window.AMPLIFYX_CONFIG.openaiApiKey) {
+        chatbotState.apiKey = window.AMPLIFYX_CONFIG.openaiApiKey;
     }
     
     // Check if EmailJS is configured
-    if (CHATBOT_CONFIG.emailJS.serviceId !== 'YOUR_SERVICE_ID') {
-        chatbotState.emailJSConfigured = true;
-        // Initialize EmailJS
-        if (typeof emailjs !== 'undefined') {
-            emailjs.init(CHATBOT_CONFIG.emailJS.userId);
+    if (window.AMPLIFYX_CONFIG && window.AMPLIFYX_CONFIG.emailJS) {
+        const emailConfig = window.AMPLIFYX_CONFIG.emailJS;
+        if (emailConfig.serviceId !== 'YOUR_SERVICE_ID') {
+            chatbotState.emailJSConfigured = true;
+            // Update config with values from external config
+            CHATBOT_CONFIG.emailJS = emailConfig;
+            // Initialize EmailJS
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(emailConfig.userId);
+            }
         }
     }
 }
@@ -223,20 +228,9 @@ function toggleChat() {
 async function initConversation() {
     chatbotMessages.innerHTML = '';
     
-    // Check if we have API key for AI mode
-    if (!chatbotState.apiKey) {
-        // Start with API key prompt
-        addBotMessage(
-            "Welcome to Amplifyx Technologies! I'm here to help you explore how we can accelerate your product development with AI.\n\n" +
-            "To provide you with the best experience, would you like to enable AI-powered conversation?",
-            ["Enable AI Assistant", "Continue without AI"]
-        );
-        chatbotState.conversationMode = 'setup';
-    } else {
-        // Start AI conversation
-        chatbotState.conversationMode = 'ai';
-        await startAIConversation();
-    }
+    // Always start AI conversation - we have the API key built in
+    chatbotState.conversationMode = 'ai';
+    await startAIConversation();
 }
 
 // Start AI Conversation
@@ -295,9 +289,7 @@ async function processUserMessage(message) {
     showTypingIndicator();
     
     // Handle based on conversation state
-    if (chatbotState.conversationMode === 'setup') {
-        await handleSetupMode(message);
-    } else if (chatbotState.awaitingConfirmation) {
+    if (chatbotState.awaitingConfirmation) {
         await handleConfirmation(message);
     } else if (chatbotState.conversationMode === 'ai') {
         await handleAIConversation(message);
@@ -308,37 +300,8 @@ async function processUserMessage(message) {
     hideTypingIndicator();
 }
 
-// Handle Setup Mode (API Key)
-async function handleSetupMode(message) {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('enable') || lowerMessage.includes('ai')) {
-        addBotMessage("Great! Please paste your OpenAI API key below. It will be stored securely in your browser and never sent to our servers.\n\nDon't have one? Get it at platform.openai.com");
-        chatbotState.conversationMode = 'awaiting_key';
-    } else {
-        chatbotState.conversationMode = 'fallback';
-        addBotMessage(
-            "No problem! I can still help you learn about Amplifyx Technologies. What aspect of our services interests you most?",
-            ["AI Integration", "Rapid Prototyping", "Fractional CTO", "Our Process"]
-        );
-    }
-}
-
 // Handle AI Conversation
 async function handleAIConversation(message) {
-    // Handle API key input
-    if (chatbotState.conversationMode === 'awaiting_key') {
-        if (message.startsWith('sk-')) {
-            localStorage.setItem('openai_api_key', message);
-            chatbotState.apiKey = message;
-            chatbotState.conversationMode = 'ai';
-            addBotMessage("✅ Perfect! AI assistant activated. Now, let's talk about your project. What kind of AI solution are you looking to build?");
-            return;
-        } else {
-            addBotMessage("That doesn't look like a valid OpenAI API key. They start with 'sk-'. Please try again or type 'skip' to continue without AI.");
-            return;
-        }
-    }
     
     // Extract fields from message
     extractFieldsFromMessage(message);
