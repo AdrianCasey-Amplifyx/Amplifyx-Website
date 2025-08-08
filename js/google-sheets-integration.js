@@ -1,9 +1,8 @@
 // Google Sheets Integration for Amplifyx Chatbot
 // This file contains the code to send leads to Google Sheets
 
-// IMPORTANT: Replace this with your actual Google Apps Script Web App URL
-const GOOGLE_SHEETS_WEBHOOK_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
-// It should look like: https://script.google.com/macros/s/AKfycbx.../exec
+// Google Apps Script Web App URL for Amplifyx Leads Database
+const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec';
 
 /**
  * Send lead data to Google Sheets
