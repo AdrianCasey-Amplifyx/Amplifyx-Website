@@ -57,6 +57,7 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
 3. SMART EXTRACTION RULES
    - If someone provides multiple pieces of info at once (e.g., "OnCore Services. adrianjcasey@gmail.com 0431481227"), acknowledge ALL of it
    - Extract names from email addresses if not explicitly provided
+   - IMPORTANT: "I am not sure" is NOT a name - only extract actual names when user says "My name is X" or "I am X" (where X is clearly a name)
    - Don't re-ask for information already given
    - Accept information in any order
 
@@ -83,9 +84,10 @@ YOUR APPROACH: Follow a systematic but natural conversation flow:
    -->
    CRITICAL RULES:
    - Include ALL 8 fields EVERY TIME
-   - If phone was provided in conversation (like 0431481227), INCLUDE IT
+   - ALWAYS check conversation history for phone numbers (format: 0431481227 or similar)
+   - If user provided phone ANYWHERE in conversation, you MUST include it
    - If phone wasn't provided, use "phone": ""
-   - Extract phone from ANY message where user provided it
+   - Use actual names only (not "not sure" or similar phrases)
    - Order MUST be: name, company, email, phone, projectType, timeline, budget, score
 
 6. PROJECT EVALUATION (INTERNAL SCORING)
@@ -629,19 +631,36 @@ function extractFieldsFromMessage(message) {
         chatbotState.fieldsCollected.budget = true;
     }
     
-    // Name extraction - only when explicitly stated
+    // Name extraction - only when explicitly stated (not "I am not sure", etc.)
     const namePatterns = [
-        /(?:i'm|i am|my name is|this is|call me)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
+        /(?:my name is|this is|call me)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
         /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+here/i,
         /(?:it's|its)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+(?:from|at|with)/i // "It's John from..."
     ];
     
+    // Special case: "I am [Name]" but NOT "I am not" or "I am unsure" etc.
+    const iAmPattern = /i(?:'m| am)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s*$/i;
+    const iAmMatch = message.match(iAmPattern);
+    if (iAmMatch && !message.toLowerCase().includes('not') && !message.toLowerCase().includes('unsure')) {
+        namePatterns.push(iAmPattern);
+    }
+    
+    // List of words that are definitely NOT names
+    const notNames = ['not', 'sure', 'unsure', 'uncertain', 'maybe', 'possibly', 'probably', 'definitely'];
+    
     for (const pattern of namePatterns) {
         const nameMatch = message.match(pattern);
         if (nameMatch && !chatbotState.fieldsCollected.name) {
-            chatbotState.leadData.name = nameMatch[1];
-            chatbotState.fieldsCollected.name = true;
-            break;
+            const potentialName = nameMatch[1];
+            // Check if this is actually a name (not "not sure" etc.)
+            const isNotName = notNames.some(word => potentialName.toLowerCase().includes(word));
+            
+            if (!isNotName && potentialName.length > 1) {
+                chatbotState.leadData.name = potentialName;
+                chatbotState.fieldsCollected.name = true;
+                console.log('👤 Name extracted:', potentialName);
+                break;
+            }
         }
     }
     
