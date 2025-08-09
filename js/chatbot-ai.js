@@ -252,12 +252,9 @@ async function startAIConversation() {
     // The greeting is only for display, not for AI context
     
     addBotMessage(initialMessage, [
-        "AI Automation",
-        "Custom AI Chatbots",
-        "Rapid Prototyping",
-        "AI Strategy Consulting",
-        "Technical Assessment",
-        "Just Exploring"
+        "Book a Discovery Call",
+        "Just Exploring",
+        "Something Else"
     ]);
 }
 
