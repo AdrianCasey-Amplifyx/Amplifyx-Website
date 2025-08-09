@@ -3,7 +3,7 @@
 // For local development with API keys, use config.js instead
 
 window.AMPLIFYX_CONFIG = window.AMPLIFYX_CONFIG || {
-    // Vercel API proxy endpoint - enables AI for all visitors!
+    // Vercel API proxy endpoint - this is the WORKING endpoint
     apiProxyUrl: 'https://amplifyx-chatbot.vercel.app/api/chat',
     
     // EmailJS configuration (safe to expose - these are public IDs)

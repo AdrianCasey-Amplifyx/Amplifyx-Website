@@ -303,7 +303,7 @@ async function sendAdminEmail({ to, subject, html, lead }) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'Amplifyx AI <notifications@amplifyx.com.au>',
+          from: 'Amplifyx AI <onboarding@resend.dev>',
           to: [to],
           subject: subject,
           html: html,

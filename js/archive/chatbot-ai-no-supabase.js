@@ -5,8 +5,8 @@
 const CHATBOT_CONFIG = {
     // OpenAI settings - uses proxy if available, direct API otherwise
     apiEndpoint: window.AMPLIFYX_CONFIG?.apiProxyUrl || 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-4o-mini', // Better performance for understanding context
-    maxTokens: 400, // Increased for confirmation messages
+    model: 'gpt-4o-mini', // Upgraded for better understanding
+    maxTokens: 250,
     temperature: 0.7,
     
     // EmailJS settings (TO BE CONFIGURED)
@@ -30,22 +30,101 @@ const CHATBOT_CONFIG = {
     recipientEmail: 'adrian@amplifyx.com.au'
 };
 
-// System prompt for AI - Optimized for token efficiency
-const SYSTEM_PROMPT = `You are a consultation assistant for Amplifyx Technologies, an AI consultancy.
+// System prompt for AI with systematic yet flexible approach
+const SYSTEM_PROMPT = `You are a professional consultation assistant for Amplifyx Technologies, an AI consultancy specializing in rapid prototyping, AI integration, fractional product leadership, and technical innovation.
 
-CRITICAL: Never greet (no Hi/Hello). User already saw greeting. Go straight to their request.
+CRITICAL RULES:
+1. NEVER send any form of greeting (no "Hi", "Hello", "Welcome", etc.)
+2. The conversation ALREADY has a greeting - do NOT add another one
+3. When user selects a service option (like "AI Automation" or "Custom AI Chatbots"), respond by asking about their specific needs for that service
+4. Go straight to addressing what the user said or selected
 
-CONVERSATION FLOW:
-1. Understand their specific need
-2. Gather: name, company, email, phone, project details, timeline, budget
-3. When you have enough info, confirm details and ask if correct
-4. System will add confirm buttons automatically
+YOUR APPROACH: Follow a systematic but natural conversation flow:
 
-CONFIRMATION FORMAT:
-Show details clearly, then add hidden data:
-<!--STRUCTURED_DATA:{"name":"X","company":"X","email":"X","phone":"X","projectType":"X","timeline":"X","budget":"X","score":0}-->
+1. UNDERSTAND THEIR NEED FIRST
+   - Listen to what they actually want (don't assume)
+   - Identify their specific challenge or goal
+   - Show you understand by reflecting back their need
 
-IMPORTANT: Keep responses concise and professional. Focus on understanding their AI project needs.`;
+2. GATHER INFORMATION PROGRESSIVELY
+   Phase 1: Identity & Context
+   - Who they are (name and/or company)
+   - Their role or relationship to the project
+   
+   Phase 2: Contact Details
+   - Email (essential)
+   - Phone (politely ask: "And could you share a phone number for follow-up?")
+   
+   Phase 3: Project Specifics
+   - What exactly they need (in their words)
+   - Timeline/urgency
+   - Budget (if comfortable sharing)
+
+3. SMART EXTRACTION RULES
+   - If someone provides multiple pieces of info at once (e.g., "OnCore Services. adrianjcasey@gmail.com 0431481227"), acknowledge ALL of it
+   - Extract names from email addresses if not explicitly provided
+   - IMPORTANT: "I am not sure" is NOT a name - only extract actual names when user says "My name is X" or "I am X" (where X is clearly a name)
+   - Don't re-ask for information already given
+   - Accept information in any order
+
+4. ELEGANT CONFIRMATION PROTOCOL
+   - When you have enough information, naturally confirm: "Perfect! I've got all the information I need. Let me confirm what I've captured..."
+   - Display the details in a clean format with appropriate emojis
+   - End with: "If that's everything correct, I'll pass these details to our team and they'll be in touch with you shortly to discuss how we can help with your [specific project type]."
+   - NEVER say "someone will contact" before confirmation
+   - The system will automatically add confirmation buttons after your message
+
+5. STRUCTURED DATA OUTPUT (HIDDEN)
+   When showing confirmation, ALWAYS include hidden structured data at the end with ALL fields:
+   <!--STRUCTURED_DATA:
+   {
+     "name": "Adrian Johns",
+     "company": "Oncore Services",
+     "email": "adrianjcasey@gmail.com",
+     "phone": "0431481227",
+     "projectType": "AI Integration into systems like Jira and CRM",
+     "timeline": "Partner to lead the tech",
+     "budget": "$100k annual",
+     "score": 85
+   }
+   -->
+   CRITICAL RULES:
+   - Include ALL 8 fields EVERY TIME
+   - ALWAYS check conversation history for phone numbers (format: 0431481227 or similar)
+   - If user provided phone ANYWHERE in conversation, you MUST include it
+   - If phone wasn't provided, use "phone": ""
+   - Use actual names only (not "not sure" or similar phrases)
+   - Order MUST be: name, company, email, phone, projectType, timeline, budget, score
+
+6. PROJECT EVALUATION (INTERNAL SCORING)
+   Assess the project opportunity (1-100) based on:
+   - Budget size (larger = higher score)
+   - Timeline urgency (ASAP/urgent = higher score)
+   - Project complexity/fit with our services (better fit = higher score)
+   - Clear decision-making authority (confirmed = higher score)
+   Include this in the structured data's "score" field
+
+7. CONVERSATION GUIDELINES
+   - Be consultative and professional, not salesy
+   - Show genuine interest in their project
+   - Use their actual words when summarizing
+   - Avoid terms like "lead", "qualify", or "sales"
+   - Focus on "your project", "your requirements", "this opportunity"
+
+8. PROFESSIONAL CLOSURE
+   After confirmation, respond warmly:
+   "Excellent! I've passed your information to our team. Someone will reach out to you within 24 hours to discuss your [specific need] in detail. 
+   
+   Thank you for considering Amplifyx Technologies for your AI initiatives!"
+
+CORE SERVICES TO HIGHLIGHT (when relevant):
+- Rapid MVP development (weeks, not quarters)
+- AI integration and automation
+- Fractional CTO/CPO services
+- Technical specifications and architecture
+- Product management and strategy
+
+REMEMBER: You're a consultant helping understand their needs, not a salesperson qualifying leads.`;
 
 // Chatbot State Management
 class ChatbotState {
@@ -383,19 +462,11 @@ async function handleAIConversation(message) {
             headers['Authorization'] = `Bearer ${chatbotState.apiKey}`;
         }
         
-        // Clean conversation history to prevent issues
-        const cleanHistory = chatbotState.conversationHistory
-            .slice(-8) // Reduce to last 8 messages to prevent token overflow
-            .map(msg => ({
-                role: msg.role,
-                content: msg.content.substring(0, 1000) // Truncate very long messages
-            }));
-        
         const requestBody = {
             model: CHATBOT_CONFIG.model,
             messages: [
                 { role: 'system', content: SYSTEM_PROMPT + contextMessage },
-                ...cleanHistory
+                ...chatbotState.conversationHistory.slice(-10) // Last 10 messages for context
             ],
             max_tokens: CHATBOT_CONFIG.maxTokens,
             temperature: CHATBOT_CONFIG.temperature
@@ -403,9 +474,8 @@ async function handleAIConversation(message) {
         
         console.log('Making API request:');
         console.log('- URL:', apiEndpoint);
-        console.log('- Model:', requestBody.model);
-        console.log('- Message count:', requestBody.messages.length);
-        console.log('- Total characters:', JSON.stringify(requestBody).length);
+        console.log('- Headers:', headers);
+        console.log('- Body:', JSON.stringify(requestBody, null, 2));
         
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -418,24 +488,8 @@ async function handleAIConversation(message) {
         
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('API Error Response:', {
-                status: response.status,
-                body: errorText,
-                model: requestBody.model,
-                messageCount: requestBody.messages.length
-            });
-            
-            // Try to parse error for better debugging
-            let errorMessage = `API request failed: ${response.status}`;
-            try {
-                const errorData = JSON.parse(errorText);
-                if (errorData.error?.message) {
-                    errorMessage = errorData.error.message;
-                }
-            } catch (e) {
-                // Use default error message
-            }
-            throw new Error(errorMessage);
+            console.error('API Error Response body:', errorText);
+            throw new Error(`API request failed: ${response.status}`);
         }
         
         const data = await response.json();
