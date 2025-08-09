@@ -336,7 +336,8 @@ async function submitLeadToSupabase() {
             sessionId: chatbotState.sessionId,
             structuredData: {
                 ...chatbotState.structuredData,
-                score: chatbotState.serverScore || 0
+                // Use AI's score if provided, otherwise use server score, otherwise 0
+                score: chatbotState.structuredData.score || chatbotState.serverScore || 0
             },
             conversation: chatbotState.conversationHistory
         };

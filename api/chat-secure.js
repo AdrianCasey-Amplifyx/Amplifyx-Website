@@ -132,6 +132,13 @@ export default async function handler(req, res) {
       try {
         structuredData = JSON.parse(structuredDataMatch[1].trim());
         console.log('✅ Extracted structured data:', structuredData);
+        
+        // If AI didn't provide a score or it's 0, calculate it server-side
+        if (!structuredData.score || structuredData.score === 0) {
+          const calculatedScore = calculateLeadScore(structuredData);
+          console.log(`📊 Calculated server-side score: ${calculatedScore}`);
+          structuredData.score = calculatedScore;
+        }
       } catch (e) {
         console.error('❌ Failed to parse structured data:', e);
         console.log('Raw structured data string:', structuredDataMatch[1]);
@@ -146,6 +153,10 @@ export default async function handler(req, res) {
           lowerResponse.includes("they'll be in touch")) {
         console.log('📝 Attempting fallback extraction from conversation...');
         structuredData = extractFromConversation(messages);
+        // Calculate score for fallback extraction
+        if (structuredData) {
+          structuredData.score = calculateLeadScore(structuredData);
+        }
       }
     }
     

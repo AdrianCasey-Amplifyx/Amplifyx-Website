@@ -115,29 +115,55 @@ REMEMBER: You're a consultant helping understand their needs, not a salesperson 
 export function calculateLeadScore(leadData) {
     let score = 0;
     
-    // Timeline scoring
-    const timelineScores = {
-        'ASAP': 30,
-        'Within 1 month': 25,
-        '1-3 months': 20,
-        '3-6 months': 10,
-        'Just researching': 5
-    };
-    score += timelineScores[leadData.timeline] || 0;
+    // Timeline scoring (more flexible matching)
+    const timeline = (leadData.timeline || '').toLowerCase();
+    if (timeline.includes('asap') || timeline.includes('immediate') || timeline.includes('urgent')) {
+        score += 30;
+    } else if (timeline.includes('1 month') || timeline.includes('one month') || timeline.includes('4 week')) {
+        score += 25;
+    } else if (timeline.includes('2-3 month') || timeline.includes('2 month') || timeline.includes('3 month') || timeline.includes('quarter')) {
+        score += 20;
+    } else if (timeline.includes('6 month') || timeline.includes('half year')) {
+        score += 10;
+    } else if (timeline.includes('research') || timeline.includes('exploring')) {
+        score += 5;
+    } else if (leadData.timeline) {
+        score += 10; // Some timeline provided
+    }
     
-    // Budget scoring
-    if (leadData.budget) {
-        if (leadData.budget.includes('100k') || leadData.budget.includes('100,000')) score += 30;
-        else if (leadData.budget.includes('50k') || leadData.budget.includes('50,000')) score += 25;
-        else if (leadData.budget.includes('25k') || leadData.budget.includes('25,000')) score += 20;
-        else if (leadData.budget.includes('10k') || leadData.budget.includes('10,000')) score += 15;
+    // Budget scoring (extract numbers and evaluate)
+    const budget = (leadData.budget || '').toLowerCase().replace(/[$,]/g, '');
+    const budgetMatch = budget.match(/(\d+)k?/);
+    if (budgetMatch) {
+        const amount = parseInt(budgetMatch[1]);
+        if (budget.includes('k')) {
+            // Already in thousands
+            if (amount >= 100) score += 30;
+            else if (amount >= 75) score += 28;
+            else if (amount >= 50) score += 25;
+            else if (amount >= 25) score += 20;
+            else if (amount >= 10) score += 15;
+            else score += 10;
+        } else if (amount >= 1000) {
+            // Raw number
+            if (amount >= 100000) score += 30;
+            else if (amount >= 75000) score += 28;
+            else if (amount >= 50000) score += 25;
+            else if (amount >= 25000) score += 20;
+            else if (amount >= 10000) score += 15;
+            else score += 10;
+        }
+    } else if (leadData.budget) {
+        score += 5; // Budget mentioned but unclear
     }
     
     // Field completion scoring
-    if (leadData.name) score += 10;
-    if (leadData.company) score += 10;
-    if (leadData.email) score += 15;
-    if (leadData.projectType) score += 10;
+    if (leadData.name && leadData.name.length > 1) score += 10;
+    if (leadData.company && leadData.company.length > 1) score += 10;
+    if (leadData.email && leadData.email.includes('@')) score += 15;
+    if (leadData.phone) score += 5;
+    if (leadData.projectType && leadData.projectType.length > 5) score += 10;
     
-    return score;
+    // Cap at 100
+    return Math.min(score, 100);
 }
