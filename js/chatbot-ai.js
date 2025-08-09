@@ -342,6 +342,33 @@ async function processUserMessage(message) {
 // Handle AI Conversation
 async function handleAIConversation(message) {
     
+    // Handle quick action buttons with direct responses
+    if (message === "Book a Discovery Call") {
+        const response = "Excellent! I'd be happy to help you schedule a discovery call. Our team is available for consultations to discuss your AI and product development needs.\n\nYou can book a call directly at: https://calendly.com/amplifyx\n\nAlternatively, you can email us at adrian@amplifyx.com.au with your preferred times.\n\nCould you tell me a bit about your project so I can make sure we have the right team members on the call?";
+        addBotMessage(response);
+        chatbotState.conversationHistory.push({
+            role: 'assistant',
+            content: response
+        });
+        return;
+    } else if (message === "Learn More About Amplifyx") {
+        const response = "Amplifyx Technologies is an AI consultancy based in Brisbane, Australia. We help businesses embrace AI and ship products fast.\n\n**Our Core Services:**\n• AI Integration - Seamlessly add AI capabilities to your products\n• Rapid Prototyping - Build MVPs in 2-4 weeks\n• AI Automation - Automate repetitive tasks with intelligent systems\n• Fractional CTO - Senior technical leadership when you need it\n\n**Pricing:**\n• Discovery Calls: Free\n• Proof of Concept: From $5,000\n• MVP Development: $15,000 - $50,000\n• Fractional CTO: $5,000 - $15,000/month\n\nWhat specific area would you like to explore?";
+        addBotMessage(response);
+        chatbotState.conversationHistory.push({
+            role: 'assistant',
+            content: response
+        });
+        return;
+    } else if (message === "Something Else") {
+        const response = "I'm here to help! Feel free to ask me anything about:\n\n• Our AI development services\n• How we can help with your specific project\n• Our process and timelines\n• Technical capabilities\n• Pricing for your needs\n\nWhat would you like to know?";
+        addBotMessage(response);
+        chatbotState.conversationHistory.push({
+            role: 'assistant',
+            content: response
+        });
+        return;
+    }
+    
     // Extract fields from message
     extractFieldsFromMessage(message);
     
@@ -378,7 +405,11 @@ async function handleAIConversation(message) {
         let augmentedUserMessage = userMessage;
         let ragContext = "";
         
-        if (window.RAGHelper && window.RAGHelper.augmentMessageWithRAG) {
+        // Skip RAG for quick action buttons
+        const quickActions = ["Book a Discovery Call", "Learn More About Amplifyx", "Something Else"];
+        const skipRAG = quickActions.includes(userMessage);
+        
+        if (!skipRAG && window.RAGHelper && window.RAGHelper.augmentMessageWithRAG) {
             console.log('🔍 Using RAG to search knowledge base...');
             try {
                 const ragResult = await window.RAGHelper.augmentMessageWithRAG(userMessage, chatbotState.conversationHistory);
@@ -392,6 +423,8 @@ async function handleAIConversation(message) {
                 console.error('❌ RAG search error:', ragError);
                 // Continue without RAG context rather than failing
             }
+        } else if (skipRAG) {
+            console.log('⏭️ Skipping RAG for quick action button');
         } else {
             console.log('⚠️ RAG Helper not available');
         }
