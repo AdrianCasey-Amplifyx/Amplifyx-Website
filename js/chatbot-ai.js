@@ -330,10 +330,12 @@ async function startAIConversation() {
     });
     
     addBotMessage(initialMessage, [
-        "Need AI integration",
-        "Rapid prototyping",
-        "Fractional CTO services",
-        "Just exploring"
+        "AI Automation",
+        "Custom AI Chatbots",
+        "Rapid Prototyping",
+        "AI Strategy Consulting",
+        "Technical Assessment",
+        "Just Exploring"
     ]);
 }
 

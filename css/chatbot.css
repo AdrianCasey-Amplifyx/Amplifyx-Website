@@ -276,25 +276,40 @@
 .quick-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 12px;
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .quick-action-btn {
-    padding: 8px 12px;
-    background: rgba(123, 63, 242, 0.1);
-    border: 1px solid rgba(123, 63, 242, 0.3);
-    border-radius: 20px;
+    padding: 10px 16px;
+    background: rgba(123, 63, 242, 0.15);
+    border: 1.5px solid rgba(233, 76, 255, 0.4);
+    border-radius: 22px;
     color: #E94CFF;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .quick-action-btn:hover {
-    background: rgba(123, 63, 242, 0.2);
-    border-color: rgba(123, 63, 242, 0.5);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%);
+    border-color: #E94CFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233, 76, 255, 0.2);
 }
 
 /* Input Container */
@@ -416,4 +431,18 @@
     border-radius: 8px;
     font-size: 13px;
     margin-top: 8px;
+}
+
+/* Mobile optimizations for quick actions */
+@media (max-width: 480px) {
+    .quick-actions {
+        gap: 8px;
+    }
+    
+    .quick-action-btn {
+        padding: 9px 14px;
+        font-size: 13px;
+        flex: 0 1 calc(50% - 4px);
+        text-align: center;
+    }
 }
