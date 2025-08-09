@@ -5,7 +5,7 @@
 const CHATBOT_CONFIG = {
     // OpenAI settings - uses proxy if available, direct API otherwise
     apiEndpoint: window.AMPLIFYX_CONFIG?.apiProxyUrl || 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-4o-mini', // Better performance for understanding context
+    model: 'gpt-4o', // Best model for understanding context
     maxTokens: 400, // Increased for confirmation messages
     temperature: 0.7,
     
