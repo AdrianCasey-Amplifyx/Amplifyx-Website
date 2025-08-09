@@ -511,13 +511,22 @@ async function handleAIConversation(message) {
             try {
                 // Fix common JSON issues from AI response
                 let jsonString = structuredDataMatch[1].trim();
-                // Replace single quotes with double quotes for JSON compatibility
+                console.log('Raw structured data:', jsonString);
+                
+                // More careful JSON fixing
+                // First, protect existing double quotes in values
+                jsonString = jsonString.replace(/"([^"]*?)"/g, '§QUOTE§$1§QUOTE§');
+                // Replace single quotes with double quotes
                 jsonString = jsonString.replace(/'/g, '"');
-                // Fix any property names that might not be quoted
-                jsonString = jsonString.replace(/(\w+):/g, '"$1":');
-                // Fix double-quoted property names (from previous fix)
+                // Restore protected quotes
+                jsonString = jsonString.replace(/§QUOTE§/g, '"');
+                
+                // Fix unquoted property names (but not if already quoted)
+                jsonString = jsonString.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g, '$1"$2":');
+                // Remove any duplicate quotes
                 jsonString = jsonString.replace(/""+/g, '"');
                 
+                console.log('Fixed JSON string:', jsonString);
                 const structuredData = JSON.parse(jsonString);
                 console.log('📊 STRUCTURED DATA FROM AI:', structuredData);
                 
@@ -551,6 +560,10 @@ async function handleAIConversation(message) {
             } catch (e) {
                 console.error('❌ Failed to parse structured data:', e);
                 console.error('Raw data that failed:', structuredDataMatch[1]);
+                
+                // Try to extract fields manually as fallback
+                console.log('Attempting manual field extraction...');
+                extractFieldsFromAIResponse(aiResponse);
             }
             
             // Remove the structured data from the displayed message
