@@ -6,6 +6,9 @@ window.AMPLIFYX_CONFIG = window.AMPLIFYX_CONFIG || {
     // Vercel API proxy endpoint - this is the WORKING endpoint
     apiProxyUrl: 'https://amplifyx-chatbot.vercel.app/api/chat',
     
+    // Supabase lead submission endpoint
+    leadSubmitUrl: 'https://amplifyx-chatbot.vercel.app/api/lead-submit',
+    
     // EmailJS configuration (safe to expose - these are public IDs)
     emailJS: {
         serviceId: 'YOUR_SERVICE_ID',  // Add your EmailJS service ID here

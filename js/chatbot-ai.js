@@ -53,6 +53,8 @@ class ChatbotState {
         // API key will be set from environment or config
         this.apiKey = null;
         this.emailJSConfigured = false;
+        // Generate unique session ID for this chat session
+        this.sessionId = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         
         // Lead data tracking
         this.leadData = {
@@ -92,6 +94,8 @@ class ChatbotState {
         this.sessionStartTime = Date.now();
         this.recentMessages = [];
         this.conversationHistory = [];
+        // Generate new session ID for the new conversation
+        this.sessionId = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         this.leadData = {
             name: '',
             company: '',
@@ -772,7 +776,15 @@ async function completeQualification() {
     const referenceNumber = 'AMP-' + Date.now().toString(36).toUpperCase();
     chatbotState.leadData.referenceNumber = referenceNumber;
     
-    // Send email
+    // Submit to Supabase first
+    const supabaseResult = await submitLeadToSupabase();
+    if (supabaseResult) {
+        console.log('✅ Lead saved to Supabase database');
+    } else {
+        console.log('⚠️ Supabase submission failed, using localStorage backup only');
+    }
+    
+    // Send email notification
     await sendLeadEmail();
     
     // Professional completion message
@@ -812,6 +824,61 @@ function calculateLeadScore() {
     if (chatbotState.leadData.projectType) score += 10;
     
     return score;
+}
+
+// Submit Lead to Supabase Database
+async function submitLeadToSupabase() {
+    try {
+        console.log('📤 Submitting lead to Supabase...');
+        console.log('Session ID:', chatbotState.sessionId);
+        
+        // Prepare submission data
+        const submissionData = {
+            sessionId: chatbotState.sessionId,
+            structuredData: {
+                name: chatbotState.leadData.name || '',
+                email: chatbotState.leadData.email || '',
+                phone: chatbotState.leadData.phone || '',
+                company: chatbotState.leadData.company || '',
+                projectType: chatbotState.leadData.projectType || '',
+                timeline: chatbotState.leadData.timeline || '',
+                budget: chatbotState.leadData.budget || '',
+                qualified: chatbotState.leadData.qualified,
+                score: chatbotState.leadData.score,
+                referenceNumber: chatbotState.leadData.referenceNumber
+            },
+            conversation: chatbotState.conversationHistory.slice(-20) // Last 20 messages
+        };
+        
+        // Get the lead submission endpoint
+        const leadSubmitUrl = window.AMPLIFYX_CONFIG?.leadSubmitUrl || 'https://amplifyx-chatbot.vercel.app/api/lead-submit';
+        
+        // Submit to API
+        const response = await fetch(leadSubmitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Session-ID': chatbotState.sessionId
+            },
+            body: JSON.stringify(submissionData)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Lead submitted to Supabase successfully!');
+            console.log('Lead ID:', result.leadId);
+            return result;
+        } else {
+            const errorText = await response.text();
+            console.error('❌ Supabase submission failed:', errorText);
+            // Don't throw - allow fallback to localStorage
+        }
+    } catch (error) {
+        console.error('❌ Error submitting to Supabase:', error);
+        // Don't throw - allow fallback to localStorage
+    }
+    
+    return null;
 }
 
 // Send Lead Email using EmailJS
