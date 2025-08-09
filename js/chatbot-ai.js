@@ -443,7 +443,7 @@ async function handleAIConversation(message) {
         }
         
         const data = await response.json();
-        const aiResponse = data.choices[0].message.content;
+        let aiResponse = data.choices[0].message.content;
         
         // Add to history
         chatbotState.conversationHistory.push({
