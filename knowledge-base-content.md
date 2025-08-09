@@ -2,7 +2,7 @@
 
 ## Company Overview
 
-Amplifyx Technologies is an AI consultancy based in Melbourne, Australia that helps businesses embrace AI and ship products fast. We specialize in AI-driven strategies, rapid prototyping, and clear execution for founders stuck in tech challenges.
+Amplifyx Technologies is an AI consultancy based in Brisbane, Australia that helps businesses embrace AI and ship products fast. We specialize in AI-driven strategies, rapid prototyping, and clear execution for founders stuck in tech challenges.
 
 **Tagline:** Embrace AI. Ship Fast.
 **Mission:** Unblock your product roadmap with AI-powered solutions
@@ -85,13 +85,13 @@ Smooth deployment with training and ongoing support as needed.
 - **Frameworks:** TensorFlow, PyTorch, Hugging Face
 - **Cloud Platforms:** AWS, Google Cloud, Azure
 - **Languages:** Python, JavaScript, TypeScript
-- **Databases:** PostgreSQL, MongoDB, Vector databases
+- **Databases:** PostgreSQL, MongoDB, Vector databases, Supabase for light touch projects
 - **APIs:** REST, GraphQL, WebSockets
 
 ## Pricing Structure
 
 - **Discovery Calls:** Free initial consultation
-- **Proof of Concept:** Starting from $5,000
+- **Proof of Concept:** Starting from $5,000 - basic clickable prototypes (html design)
 - **MVP Development:** $15,000 - $50,000
 - **Enterprise Solutions:** Custom pricing based on scope
 - **Fractional CTO:** $5,000 - $15,000 per month
@@ -112,7 +112,10 @@ Most MVPs are delivered within 2-4 weeks, depending on complexity.
 Yes! We specialize in translating business needs into technical solutions.
 
 ### What size companies do you work with?
-We work with startups, scale-ups, and enterprises across all industries.
+We work with small to medium sized businesses, startups and scale-ups across all industries. 
+
+### What types of companies do you work with?
+We've got great experience in providing AI, Product and Software Engineering services to Financial services, insurance, health and cosmetics, construction, crypto-exchanges, accounting, HR systems, CRMs and marketing automation products. 
 
 ### Can you integrate with our existing systems?
 Yes, we specialize in seamless integrations with existing infrastructure.
@@ -128,7 +131,7 @@ We combine deep AI expertise with rapid execution and a focus on practical busin
 ### Building an AI Chatbot - What You See vs What We Build
 
 **What the User Sees:**
-- A simple chat interface on your website
+- A simple chat interface on your website (like the one you are talking to now)
 - Intelligent responses to customer queries
 - Lead qualification questions
 - Booking or contact forms
