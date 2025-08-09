@@ -253,7 +253,7 @@ async function startAIConversation() {
     
     addBotMessage(initialMessage, [
         "Book a Discovery Call",
-        "Just Exploring",
+        "Learn More About Amplifyx",
         "Something Else"
     ]);
 }
