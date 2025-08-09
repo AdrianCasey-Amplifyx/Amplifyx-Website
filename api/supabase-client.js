@@ -48,8 +48,9 @@ export async function saveLeadToSupabase(leadData, sessionId, conversation) {
       session = newSession;
     }
     
-    // Generate reference number
-    const referenceNumber = 'AMP-' + Date.now().toString(36).toUpperCase();
+    // Use provided reference number or generate a new one
+    const referenceNumber = leadData.referenceNumber || ('AMP-' + Date.now().toString(36).toUpperCase());
+    console.log('Using reference number:', referenceNumber);
     
     // Insert lead
     const { data: lead, error: leadError } = await supabase

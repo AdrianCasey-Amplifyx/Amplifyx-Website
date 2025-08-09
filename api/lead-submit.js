@@ -58,6 +58,7 @@ export default async function handler(req, res) {
       timeline: structuredData.timeline || null,
       budget: structuredData.budget || null,
       score: structuredData.score || 0,
+      referenceNumber: structuredData.referenceNumber || null, // Include reference number!
       userAgent: req.headers['user-agent'] || null,
       referrer: req.headers.referer || null
     };
