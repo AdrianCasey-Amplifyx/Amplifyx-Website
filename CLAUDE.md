@@ -156,3 +156,78 @@ Based on conversation history, the user (Adrian from Amplifyx) requires:
 - No API key prompts for visitors
 - Mobile-friendly interface
 - Real email notifications for leads
+
+## CURRENT STATUS (As of Jan 10, 2025 - 1:45 AM Brisbane Time)
+
+### ✅ COMPLETED IN LATEST SESSION:
+1. **Fixed chatbot hallucination issues** 
+   - Updated system prompt with strict anti-hallucination rules
+   - Bot now says "I don't have that information" instead of making things up
+   
+2. **Implemented complete RAG system with Supabase:**
+   - Enabled pgvector extension in database
+   - Created knowledge_base and knowledge_documents tables
+   - Built API endpoints: generate-embeddings, knowledge-manage, vector-search
+   - Created admin interface at admin-knowledge.html
+   - Integrated RAG helper functions (js/rag-helper.js)
+   - Updated chatbot to use GPT-4o model (not 4o-mini)
+   
+3. **UI/UX Improvements:**
+   - Fixed mobile responsiveness - chatbot now fullscreen on mobile
+   - Added safe area insets for mobile browser UI
+   - Simplified initial buttons to just 3 options:
+     - "Book a Discovery Call"
+     - "Learn More About Amplifyx"  
+     - "Something Else"
+   
+4. **Lead Management Enhancements:**
+   - Added conversation summary field to leads table
+   - AI now extracts and summarizes conversations
+   - Fixed reference number consistency issues
+   - Improved data extraction using AI instead of regex
+
+5. **Knowledge Base Content:**
+   - Created comprehensive knowledge-base-content.md
+   - Updated location from Melbourne to Brisbane
+   - Added detailed service examples (chatbot complexity, automation cases)
+   - Added industry experience details
+   - Clarified pricing structure
+
+### 🔴 IMMEDIATE NEXT TASK - CRITICAL:
+**POPULATE THE KNOWLEDGE BASE WITH EMBEDDINGS**
+
+After restarting Claude with write-access MCP server, execute this:
+1. Read all sections from knowledge-base-content.md
+2. Split into logical chunks (max 1500 chars each)
+3. For each chunk:
+   - Call generate-embeddings API to create vector
+   - Store in knowledge_base table with category
+4. Categories to use:
+   - company (overview, values, contact)
+   - services (what we offer)
+   - process (how we work)
+   - pricing (costs and packages)
+   - faq (questions and answers)
+   - technical (architecture, stack)
+   - case_study (examples, automation cases)
+
+### 📝 MCP Server Status:
+- **Previous:** Read-only mode (--read-only flag)
+- **Current:** Reconfigured for write access
+- **Command:** `npx @supabase/mcp-server-supabase@latest --project-ref=gwxkufgvcxkluyprovaf`
+- **Action Required:** Restart Claude to apply changes
+
+### 🎯 After Knowledge Base Population:
+The chatbot will:
+- Use vector search to find relevant information
+- Provide accurate answers about Amplifyx
+- Know about Brisbane location, industries served, pricing
+- Stop hallucinating about careers pages, HR departments, etc.
+- Reference actual service examples and case studies
+
+### 📂 Key Files for Reference:
+- `/knowledge-base-content.md` - All company information to be embedded
+- `/migrations/FULL_RAG_MIGRATION.sql` - Database schema (already applied)
+- `/api/knowledge-manage.js` - Endpoint to add knowledge with embeddings
+- `/js/rag-helper.js` - RAG integration for chatbot
+- `/populate-knowledge-base.html` - Web tool (needs server) or can be done programmatically
