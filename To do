@@ -1,0 +1,9 @@
+1. ensure chat bot doesn't make up information and is saying something like, I am not sure perhaps best to cover that in your first chat with the team. 
+2. Fix the Resend.com domain issues (GoDaddy) so it sends from amplifyx 
+3. Email
+- Build email alerts for my email
+- reply to user with their email details
+4. add multi-modal voice to voice option
+5. add a knowledge file for the agent to reference and understand what it can say about Adrian Casey the Director, colleagues, clients, projects, etc.  
+6. Fix the mobile responsiveness of the chatbot UI 
+7. Clean up code base
