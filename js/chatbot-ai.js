@@ -327,11 +327,8 @@ async function initConversation() {
 async function startAIConversation() {
     const initialMessage = "Welcome to Amplifyx Technologies! I'm here to help you explore how we can accelerate your product development with AI. What brings you here today?";
     
-    // Add to conversation history
-    chatbotState.conversationHistory.push({
-        role: 'assistant',
-        content: initialMessage
-    });
+    // Don't add greeting to conversation history - it confuses the AI
+    // The greeting is only for display, not for AI context
     
     addBotMessage(initialMessage, [
         "AI Automation",
