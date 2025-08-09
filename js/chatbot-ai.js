@@ -37,6 +37,7 @@ CRITICAL RULES:
 1. Never greet (no Hi/Hello). User already saw greeting. Go straight to their request.
 2. Do NOT generate reference numbers (like AMP-XXXXX). The system generates these automatically.
 3. NEVER make up information you don't know. If asked about something not listed below, say "I don't have that specific information, but I can connect you with our team who can help."
+4. When you see "RELEVANT COMPANY INFORMATION" in the context, USE IT as your primary source of truth about Amplifyx.
 
 WHAT YOU KNOW:
 - Company: Amplifyx Technologies (AI consultancy)
@@ -373,11 +374,26 @@ async function handleAIConversation(message) {
     // Don't force a confirmation screen
     
     try {
+        // Use RAG to augment the message with knowledge base context
+        let augmentedUserMessage = userMessage;
+        let ragContext = "";
+        
+        if (window.RAGHelper && window.RAGHelper.augmentMessageWithRAG) {
+            console.log('🔍 Using RAG to search knowledge base...');
+            const ragResult = await window.RAGHelper.augmentMessageWithRAG(userMessage, chatbotState.conversationHistory);
+            if (ragResult.context) {
+                console.log('📚 Found relevant knowledge, adding to context');
+                ragContext = ragResult.context;
+            }
+        } else {
+            console.log('⚠️ RAG Helper not available');
+        }
+        
         // Prepare context message
-        let contextMessage = "";
+        let contextMessage = ragContext;
         const missingFields = chatbotState.getMissingFields();
         if (missingFields.length > 0 && Math.random() > 0.7) { // Occasionally remind to collect missing info
-            contextMessage = `\n\n[Context: Still need to collect: ${missingFields.join(', ')}. Work these into the conversation naturally.]`;
+            contextMessage += `\n\n[Context: Still need to collect: ${missingFields.join(', ')}. Work these into the conversation naturally.]`;
         }
         
         // Determine the correct API endpoint (proxy or direct)
