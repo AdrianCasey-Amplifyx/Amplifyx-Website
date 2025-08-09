@@ -401,11 +401,20 @@ async function handleAIConversation(message) {
         console.log('- Model:', requestBody.model);
         console.log('- Message count:', requestBody.messages.length);
         console.log('- Total characters:', JSON.stringify(requestBody).length);
+        console.log('- Request body:', JSON.stringify(requestBody, null, 2));
+        
+        let requestBodyString;
+        try {
+            requestBodyString = JSON.stringify(requestBody);
+        } catch (e) {
+            console.error('Failed to stringify request body:', e);
+            throw new Error('Invalid request data');
+        }
         
         const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify(requestBody)
+            body: requestBodyString
         });
         
         console.log('API Response status:', response.status);
@@ -483,13 +492,16 @@ async function handleAIConversation(message) {
     } catch (error) {
         console.error('AI Error Details:');
         console.error('- Error message:', error.message);
-        console.error('- Error object:', error);
+        console.error('- Error stack:', error.stack);
         console.error('- API endpoint attempted:', window.AMPLIFYX_CONFIG?.apiProxyUrl || 'Direct OpenAI');
+        console.error('- Conversation history length:', chatbotState.conversationHistory.length);
+        console.error('- Last message:', message);
         
-        // Show error message and disable chat
-        addBotMessage("Sorry, the AI agent encountered an error and is temporarily unavailable. Please try again later or contact us directly at adrian@amplifyx.com.au.");
-        chatbotInput.disabled = true;
-        chatbotInput.placeholder = "AI agent unavailable";
+        // Show error message but don't disable chat completely - let user retry
+        addBotMessage("Sorry, I encountered an error processing your message. Please try again or rephrase your request. If the issue persists, contact us at adrian@amplifyx.com.au.");
+        // Don't disable input - let user retry
+        // chatbotInput.disabled = true;
+        // chatbotInput.placeholder = "AI agent unavailable";
     }
 }
 
