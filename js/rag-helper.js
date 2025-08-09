@@ -14,7 +14,7 @@ async function searchKnowledge(query, matchCount = 3) {
             },
             body: JSON.stringify({
                 query: query,
-                matchThreshold: 0.5,  // Lower threshold for better recall
+                matchThreshold: 0.3,  // Lower threshold to ensure results are returned
                 matchCount: matchCount
             })
         });
@@ -67,8 +67,18 @@ async function augmentMessageWithRAG(userMessage, conversationHistory) {
     console.log('🔍 Searching knowledge base for:', userMessage);
     const searchResults = await searchKnowledge(userMessage);
     
-    if (!searchResults || searchResults.length === 0) {
-        console.log('📚 No relevant knowledge found');
+    // Handle both null (error) and empty array (no results) cases
+    if (!searchResults) {
+        console.log('⚠️ Knowledge base search failed, continuing without context');
+        return {
+            augmentedMessage: userMessage,
+            context: null,
+            sources: []
+        };
+    }
+    
+    if (searchResults.length === 0) {
+        console.log('📚 No relevant knowledge found (may need lower threshold)');
         return {
             augmentedMessage: userMessage,
             context: null,

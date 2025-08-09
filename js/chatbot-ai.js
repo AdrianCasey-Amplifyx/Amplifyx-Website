@@ -380,10 +380,17 @@ async function handleAIConversation(message) {
         
         if (window.RAGHelper && window.RAGHelper.augmentMessageWithRAG) {
             console.log('🔍 Using RAG to search knowledge base...');
-            const ragResult = await window.RAGHelper.augmentMessageWithRAG(userMessage, chatbotState.conversationHistory);
-            if (ragResult.context) {
-                console.log('📚 Found relevant knowledge, adding to context');
-                ragContext = ragResult.context;
+            try {
+                const ragResult = await window.RAGHelper.augmentMessageWithRAG(userMessage, chatbotState.conversationHistory);
+                if (ragResult && ragResult.context) {
+                    console.log('📚 Found relevant knowledge, adding to context');
+                    ragContext = ragResult.context;
+                } else {
+                    console.log('📭 No relevant context found, proceeding without RAG');
+                }
+            } catch (ragError) {
+                console.error('❌ RAG search error:', ragError);
+                // Continue without RAG context rather than failing
             }
         } else {
             console.log('⚠️ RAG Helper not available');
