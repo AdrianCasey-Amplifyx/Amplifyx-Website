@@ -1,0 +1,11 @@
+# Vercel Environment Variables for Supabase
+# Add these in Vercel Dashboard > Settings > Environment Variables
+
+SUPABASE_URL=https://hobaeblghefbwyxazqau.supabase.co
+SUPABASE_ANON_KEY=[GET_FROM_SUPABASE_DASHBOARD]
+SUPABASE_SERVICE_KEY=[GET_FROM_SUPABASE_DASHBOARD]
+
+# To get the keys:
+# 1. Go to https://supabase.com/dashboard/project/hobaeblghefbwyxazqau/settings/api
+# 2. Copy the "anon public" key for SUPABASE_ANON_KEY
+# 3. Copy the "service_role secret" key for SUPABASE_SERVICE_KEY

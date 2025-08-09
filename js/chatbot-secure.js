@@ -3,8 +3,8 @@
 
 // Configuration (public settings only)
 const CHATBOT_CONFIG = {
-    // API endpoint - now uses secure version
-    apiEndpoint: window.AMPLIFYX_CONFIG?.secureApiUrl || '/api/chat-secure',
+    // API endpoint - now uses secure version with proper fallback
+    apiEndpoint: window.AMPLIFYX_CONFIG?.secureApiUrl || 'https://amplifyx-chatbot.vercel.app/api/chat-secure',
     
     // Rate limiting (client-side check)
     maxMessagesPerSession: 30,
@@ -15,6 +15,10 @@ const CHATBOT_CONFIG = {
     minMessageLength: 2,
     maxMessageLength: 500,
 };
+
+// Debug logging for config
+console.log('[Chatbot] Using API endpoint:', CHATBOT_CONFIG.apiEndpoint);
+console.log('[Chatbot] Config loaded:', window.AMPLIFYX_CONFIG ? 'Yes' : 'No');
 
 // Generate unique session ID for this visitor
 function generateSessionId() {
@@ -237,6 +241,13 @@ async function processUserMessage(message) {
         hideTypingIndicator();
         addBotMessage(displayResponse);
         
+        // Store structured data if present
+        if (data.structuredData) {
+            chatbotState.structuredData = data.structuredData;
+            chatbotState.serverScore = data.serverScore || 0;
+            console.log('Received structured data:', data.structuredData);
+        }
+        
         // Check if AI is asking for confirmation
         if (isConfirmationMessage(aiResponse)) {
             chatbotState.awaitingConfirmation = true;
@@ -303,11 +314,71 @@ async function handleConfirmation(confirmed) {
     if (confirmed) {
         chatbotInput.value = "Yes, that's correct ✅";
         chatbotState.submissionComplete = true;
+        
+        // Submit to Supabase if we have structured data
+        if (chatbotState.structuredData) {
+            await submitLeadToSupabase();
+        }
     } else {
         chatbotInput.value = "I need to update something 📝";
     }
     
     handleSubmit(new Event('submit'));
+}
+
+// Submit lead data to Supabase
+async function submitLeadToSupabase() {
+    try {
+        console.log('Submitting lead to Supabase:', chatbotState.structuredData);
+        
+        // Prepare submission data
+        const submissionData = {
+            sessionId: chatbotState.sessionId,
+            structuredData: {
+                ...chatbotState.structuredData,
+                score: chatbotState.serverScore || 0
+            },
+            conversation: chatbotState.conversationHistory
+        };
+        
+        // Submit to lead endpoint
+        const leadSubmitUrl = window.AMPLIFYX_CONFIG?.leadSubmitUrl || 'https://amplifyx-chatbot.vercel.app/api/lead-submit';
+        console.log('[Chatbot] Submitting lead to:', leadSubmitUrl);
+        const response = await fetch(leadSubmitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Session-ID': chatbotState.sessionId
+            },
+            body: JSON.stringify(submissionData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Submission failed: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            console.log('Lead submitted successfully:', result);
+            
+            // Store reference number
+            chatbotState.referenceNumber = result.referenceNumber;
+            
+            // Show success message with reference number
+            setTimeout(() => {
+                addBotMessage(`✅ Perfect! I've captured all your information.\n\nYour reference number is: **${result.referenceNumber}**\n\nWe'll be in touch within 24 hours to discuss how we can help accelerate your product development with AI.`);
+            }, 1000);
+        } else {
+            console.error('Submission failed:', result);
+            // Don't show error to user, already confirmed
+        }
+        
+    } catch (error) {
+        console.error('Error submitting lead:', error);
+        // Silent fail - don't disrupt user experience
+        // Data is already saved in conversation history
+    }
 }
 
 // UI Helper Functions

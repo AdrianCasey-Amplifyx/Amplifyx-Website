@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Chatbot - Amplifyx</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        #debug-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 10000;
+            border-left: 2px solid #0f0;
+        }
+        .debug-entry {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #0f0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .debug-error { color: #f00; border-color: #f00; }
+        .debug-success { color: #0f0; border-color: #0f0; }
+        .debug-info { color: #ff0; border-color: #ff0; }
+    </style>
+</head>
+<body>
+    <div id="debug-panel">
+        <h2>🔍 Chatbot Debug Console</h2>
+        <div id="debug-output"></div>
+    </div>
+    
+    <!-- Main content -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>Debug Mode Active</h1>
+            <p>Chat with the bot and watch the debug panel →</p>
+        </div>
+    </section>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container" class="chatbot-container">
+        <button id="chatbot-toggle" class="chatbot-toggle">
+            <svg class="chat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M21 11.5C21.0034 12.8199 20.6951 14.1219 20.1 15.3C19.3944 16.7118 18.3098 17.8992 16.9674 18.7293C15.6251 19.5594 14.0782 19.9994 12.5 20C11.1801 20.0035 9.87812 19.6951 8.7 19.1L3 21L4.9 15.3C4.30493 14.1219 3.99656 12.8199 4 11.5C4.00061 9.92179 4.44061 8.37488 5.27072 7.03258C6.10083 5.69028 7.28825 4.6056 8.7 3.90003C9.87812 3.30496 11.1801 2.99659 12.5 3.00003H13C15.0843 3.11502 17.053 3.99479 18.5291 5.47089C20.0052 6.94699 20.885 8.91568 21 11V11.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="chat-badge" style="display: none;">1</span>
+        </button>
+        
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chatbot-title">
+                    <h3>Amplifyx AI Assistant</h3>
+                    <p>Debug Mode - Watch the console →</p>
+                </div>
+                <button id="chatbot-minimize" class="chatbot-minimize">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="chatbot-messages" class="chatbot-messages"></div>
+            
+            <form id="chatbot-form" class="chatbot-form">
+                <input type="text" id="chatbot-input" placeholder="Type your message..." required>
+                <button type="submit" id="chatbot-send">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </form>
+            <div class="chatbot-footer">
+                <p>Powered by Amplifyx AI • Debug Mode</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load chatbot with debug wrapper -->
+    <script src="js/config-secure.js"></script>
+    <script>
+        // Debug logging
+        const debugPanel = document.getElementById('debug-output');
+        
+        function debugLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `debug-entry debug-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            debugPanel.appendChild(entry);
+            debugPanel.scrollTop = debugPanel.scrollHeight;
+            
+            // Also log to console
+            console.log(`[DEBUG ${type}]`, message);
+        }
+        
+        // Override fetch to log API calls
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            const [url, options] = args;
+            
+            if (url.includes('lead-submit')) {
+                debugLog(`📤 SUBMITTING LEAD TO: ${url}`, 'info');
+                if (options && options.body) {
+                    try {
+                        const body = JSON.parse(options.body);
+                        debugLog(`DATA: ${JSON.stringify(body.structuredData, null, 2)}`, 'info');
+                    } catch (e) {}
+                }
+            }
+            
+            if (url.includes('chat-secure')) {
+                debugLog(`💬 SENDING TO AI: ${url}`, 'info');
+            }
+            
+            return originalFetch.apply(this, args).then(response => {
+                const clonedResponse = response.clone();
+                
+                debugLog(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (url.includes('chat-secure')) {
+                    clonedResponse.json().then(data => {
+                        if (data.structuredData) {
+                            debugLog(`✅ STRUCTURED DATA RECEIVED: ${JSON.stringify(data.structuredData, null, 2)}`, 'success');
+                        } else {
+                            debugLog(`⚠️ NO STRUCTURED DATA IN RESPONSE`, 'error');
+                        }
+                    }).catch((e) => {
+                        debugLog(`❌ Failed to parse response: ${e.message}`, 'error');
+                    });
+                }
+                
+                if (url.includes('lead-submit')) {
+                    clonedResponse.json().then(data => {
+                        if (data.success) {
+                            debugLog(`✅ LEAD SAVED! Ref: ${data.referenceNumber}`, 'success');
+                        } else {
+                            debugLog(`❌ LEAD SAVE FAILED: ${data.error}`, 'error');
+                        }
+                    }).catch(() => {});
+                }
+                
+                return response;
+            }).catch(error => {
+                debugLog(`❌ FETCH ERROR: ${error.message} - ${error.stack}`, 'error');
+                debugLog(`URL was: ${url}`, 'error');
+                debugLog(`Options: ${JSON.stringify(options?.headers || {})}`, 'error');
+                throw error;
+            });
+        };
+        
+        // Log chatbot state changes
+        window.addEventListener('load', () => {
+            debugLog('🚀 Chatbot initializing...', 'info');
+            
+            // Check config
+            if (window.AMPLIFYX_CONFIG) {
+                debugLog(`✅ Config loaded: API URL = ${window.AMPLIFYX_CONFIG.secureApiUrl}`, 'success');
+                debugLog(`✅ Lead Submit URL = ${window.AMPLIFYX_CONFIG.leadSubmitUrl}`, 'success');
+            } else {
+                debugLog(`⚠️ Config not loaded, using fallback URLs`, 'error');
+            }
+            
+            // Monitor chatbot state
+            setInterval(() => {
+                if (window.chatbotState) {
+                    if (window.chatbotState.structuredData) {
+                        debugLog(`📊 State has structured data: ${Object.keys(window.chatbotState.structuredData).join(', ')}`, 'info');
+                    }
+                    if (window.chatbotState.awaitingConfirmation) {
+                        debugLog(`⏳ Awaiting confirmation...`, 'info');
+                    }
+                }
+            }, 5000);
+        });
+    </script>
+    <script src="js/chatbot-secure.js"></script>
+</body>
+</html>

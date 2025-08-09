@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Secure Chatbot - Amplifyx</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .test-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-result {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .success { background: #065f46; border: 1px solid #10b981; }
+        .error { background: #7f1d1d; border: 1px solid #ef4444; }
+        .warning { background: #78350f; border: 1px solid #f59e0b; }
+        .info { background: #1e3a8a; border: 1px solid #3b82f6; }
+        button {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { opacity: 0.9; }
+        #chatbot-container { display: block !important; }
+    </style>
+</head>
+<body>
+    <h1>🔒 Secure Chatbot Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>1. Security Checks</h2>
+        <button onclick="testSystemPromptHidden()">Test System Prompt Hidden</button>
+        <button onclick="testLocalStoragePrivacy()">Test LocalStorage Privacy</button>
+        <button onclick="testSessionIsolation()">Test Session Isolation</button>
+        <button onclick="testAPIEndpoint()">Test Secure API</button>
+        <div id="security-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Functionality Tests</h2>
+        <button onclick="testChatbotResponse()">Test Chatbot Response</button>
+        <button onclick="testDataExtraction()">Test Data Extraction</button>
+        <button onclick="testConfirmationFlow()">Test Confirmation Flow</button>
+        <div id="functionality-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Performance Tests</h2>
+        <button onclick="testResponseTime()">Test Response Time</button>
+        <button onclick="testMemoryUsage()">Test Memory Usage</button>
+        <div id="performance-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Live Chatbot</h2>
+        <p>The chatbot should appear in the bottom-right corner. Test it with real interactions.</p>
+        <button onclick="openChatbot()">Open Chatbot</button>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container" class="chatbot-container">
+        <button id="chatbot-toggle" class="chatbot-toggle">
+            <svg class="chat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M21 11.5C21.0034 12.8199 20.6951 14.1219 20.1 15.3C19.3944 16.7118 18.3098 17.8992 16.9674 18.7293C15.6251 19.5594 14.0782 19.9994 12.5 20C11.1801 20.0035 9.87812 19.6951 8.7 19.1L3 21L4.9 15.3C4.30493 14.1219 3.99656 12.8199 4 11.5C4.00061 9.92179 4.44061 8.37488 5.27072 7.03258C6.10083 5.69028 7.28825 4.6056 8.7 3.90003C9.87812 3.30496 11.1801 2.99659 12.5 3.00003H13C15.0843 3.11502 17.053 3.99479 18.5291 5.47089C20.0052 6.94699 20.885 8.91568 21 11V11.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="chat-badge" style="display: none;">1</span>
+        </button>
+        
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chatbot-title">
+                    <h3>Amplifyx AI Assistant</h3>
+                    <p>How can we help accelerate your product?</p>
+                </div>
+                <button id="chatbot-minimize" class="chatbot-minimize">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="chatbot-messages" class="chatbot-messages"></div>
+            
+            <form id="chatbot-form" class="chatbot-form">
+                <input type="text" id="chatbot-input" placeholder="Type your message..." required>
+                <button type="submit" id="chatbot-send">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </form>
+            <div class="chatbot-footer">
+                <p>Powered by Amplifyx AI • <a href="#" id="privacy-link">Privacy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config-secure.js"></script>
+    <script src="js/chatbot-secure.js"></script>
+    
+    <script>
+        // Test Functions
+        function addResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const result = document.createElement('div');
+            result.className = `test-result ${type}`;
+            result.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            container.appendChild(result);
+        }
+
+        function testSystemPromptHidden() {
+            // Check if system prompt is exposed in any global variables
+            const exposed = [];
+            
+            // Check window object for prompt-related content
+            for (let key in window) {
+                if (typeof window[key] === 'string' && 
+                    (window[key].includes('You are an AI sales') || 
+                     window[key].includes('qualification chatbot'))) {
+                    exposed.push(key);
+                }
+            }
+            
+            // Check scripts for exposed prompts
+            const scripts = document.querySelectorAll('script');
+            let promptFound = false;
+            scripts.forEach(script => {
+                if (script.textContent && 
+                    (script.textContent.includes('You are an AI sales') ||
+                     script.textContent.includes('qualification chatbot'))) {
+                    promptFound = true;
+                }
+            });
+            
+            if (exposed.length === 0 && !promptFound) {
+                addResult('security-results', '✅ System prompt is NOT exposed in client code', 'success');
+            } else {
+                addResult('security-results', '❌ System prompt may be exposed: ' + exposed.join(', '), 'error');
+            }
+        }
+
+        function testLocalStoragePrivacy() {
+            // Check if localStorage contains any lead data
+            const keys = Object.keys(localStorage);
+            const sensitiveKeys = keys.filter(key => 
+                key.includes('lead') || 
+                key.includes('email') || 
+                key.includes('phone') ||
+                key.includes('conversation'));
+            
+            if (sensitiveKeys.length === 0) {
+                addResult('security-results', '✅ No sensitive data in localStorage', 'success');
+            } else {
+                addResult('security-results', '⚠️ Found potentially sensitive keys in localStorage: ' + sensitiveKeys.join(', '), 'warning');
+            }
+        }
+
+        function testSessionIsolation() {
+            // Check if session ID is unique
+            if (typeof chatbotState !== 'undefined' && chatbotState.sessionId) {
+                addResult('security-results', '✅ Session ID exists: ' + chatbotState.sessionId, 'success');
+                
+                // Verify it's not in localStorage
+                const storedSession = localStorage.getItem('chatbot_session');
+                if (!storedSession) {
+                    addResult('security-results', '✅ Session not persisted in localStorage', 'success');
+                } else {
+                    addResult('security-results', '⚠️ Session found in localStorage', 'warning');
+                }
+            } else {
+                addResult('security-results', '❌ No session ID found', 'error');
+            }
+        }
+
+        async function testAPIEndpoint() {
+            try {
+                const testMessage = {
+                    messages: [{
+                        role: 'user',
+                        content: 'Hello, this is a test'
+                    }],
+                    extractedData: {}
+                };
+                
+                const response = await fetch(window.AMPLIFYX_CONFIG.secureApiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-ID': 'test-session-' + Date.now()
+                    },
+                    body: JSON.stringify(testMessage)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('security-results', '✅ Secure API endpoint is working', 'success');
+                    
+                    // Check if response contains system prompt
+                    const responseText = JSON.stringify(data);
+                    if (responseText.includes('You are an AI sales')) {
+                        addResult('security-results', '⚠️ API response may contain system prompt', 'warning');
+                    }
+                } else {
+                    addResult('security-results', '❌ API endpoint returned error: ' + response.status, 'error');
+                }
+            } catch (error) {
+                addResult('security-results', '❌ Failed to connect to API: ' + error.message, 'error');
+            }
+        }
+
+        async function testChatbotResponse() {
+            addResult('functionality-results', 'ℹ️ Please test the chatbot manually using the widget', 'info');
+        }
+
+        function testDataExtraction() {
+            // Test if structured data extraction is hidden
+            const messages = document.querySelectorAll('.chat-message');
+            let structuredDataFound = false;
+            
+            messages.forEach(msg => {
+                if (msg.textContent.includes('STRUCTURED_DATA')) {
+                    structuredDataFound = true;
+                }
+            });
+            
+            if (!structuredDataFound) {
+                addResult('functionality-results', '✅ Structured data comments are hidden from UI', 'success');
+            } else {
+                addResult('functionality-results', '❌ Structured data visible in UI', 'error');
+            }
+        }
+
+        function testConfirmationFlow() {
+            addResult('functionality-results', 'ℹ️ Please test confirmation flow by completing a lead qualification', 'info');
+        }
+
+        async function testResponseTime() {
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch(window.AMPLIFYX_CONFIG.secureApiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-ID': 'perf-test-' + Date.now()
+                    },
+                    body: JSON.stringify({
+                        messages: [{ role: 'user', content: 'Hi' }],
+                        extractedData: {}
+                    })
+                });
+                
+                const endTime = performance.now();
+                const responseTime = endTime - startTime;
+                
+                if (responseTime < 2000) {
+                    addResult('performance-results', `✅ Response time: ${responseTime.toFixed(0)}ms (Good)`, 'success');
+                } else if (responseTime < 5000) {
+                    addResult('performance-results', `⚠️ Response time: ${responseTime.toFixed(0)}ms (Slow)`, 'warning');
+                } else {
+                    addResult('performance-results', `❌ Response time: ${responseTime.toFixed(0)}ms (Too slow)`, 'error');
+                }
+            } catch (error) {
+                addResult('performance-results', '❌ Performance test failed: ' + error.message, 'error');
+            }
+        }
+
+        function testMemoryUsage() {
+            if (performance.memory) {
+                const usedMemory = (performance.memory.usedJSHeapSize / 1048576).toFixed(2);
+                const totalMemory = (performance.memory.totalJSHeapSize / 1048576).toFixed(2);
+                addResult('performance-results', `ℹ️ Memory usage: ${usedMemory}MB / ${totalMemory}MB`, 'info');
+            } else {
+                addResult('performance-results', 'ℹ️ Memory API not available in this browser', 'info');
+            }
+        }
+
+        function openChatbot() {
+            if (typeof openChatbot === 'function') {
+                openChatbot();
+            } else {
+                document.getElementById('chatbot-toggle').click();
+            }
+        }
+
+        // Run initial tests
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                addResult('security-results', 'ℹ️ Click the test buttons above to run security checks', 'info');
+                addResult('functionality-results', 'ℹ️ Ready for functionality testing', 'info');
+                addResult('performance-results', 'ℹ️ Ready for performance testing', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
