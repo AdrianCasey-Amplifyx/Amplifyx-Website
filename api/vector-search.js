@@ -50,7 +50,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         input: query,
-        model: 'text-embedding-ada-002'
+        model: 'text-embedding-3-small'
       })
     });
     

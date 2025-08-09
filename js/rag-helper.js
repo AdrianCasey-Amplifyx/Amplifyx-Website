@@ -14,17 +14,19 @@ async function searchKnowledge(query, matchCount = 3) {
             },
             body: JSON.stringify({
                 query: query,
-                matchThreshold: 0.7,
+                matchThreshold: 0.5,  // Lower threshold for better recall
                 matchCount: matchCount
             })
         });
         
         if (!response.ok) {
-            console.error('Vector search failed:', response.status);
+            const errorText = await response.text();
+            console.error('Vector search failed:', response.status, errorText);
             return null;
         }
         
         const data = await response.json();
+        console.log(`Vector search returned ${data.results?.length || 0} results`);
         return data.results || [];
         
     } catch (error) {
@@ -42,11 +44,12 @@ function formatKnowledgeContext(results) {
     const context = results
         .map((result, index) => {
             const relevance = Math.round(result.similarity * 100);
-            return `[Source ${index + 1} - ${relevance}% relevant]:\n${result.content}`;
+            const title = result.title || `Source ${index + 1}`;
+            return `[${title} - ${relevance}% relevant]:\n${result.content}`;
         })
         .join('\n\n');
     
-    return `\n\nRELEVANT COMPANY INFORMATION:\n${context}\n\nUse the above information to answer accurately.`;
+    return `\n\nRELEVANT COMPANY INFORMATION FROM KNOWLEDGE BASE:\n${context}\n\nIMPORTANT: Use the above verified information to answer the user's question accurately. This information is from Amplifyx's official knowledge base.`;
 }
 
 // Augment the user's message with relevant context
