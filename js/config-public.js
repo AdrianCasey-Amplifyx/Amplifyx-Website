@@ -9,6 +9,10 @@ window.AMPLIFYX_CONFIG = window.AMPLIFYX_CONFIG || {
     // Supabase lead submission endpoint
     leadSubmitUrl: 'https://amplifyx-chatbot.vercel.app/api/lead-submit',
     
+    // RAG system endpoints
+    vectorSearchUrl: 'https://amplifyx-chatbot.vercel.app/api/vector-search',
+    knowledgeManageUrl: 'https://amplifyx-chatbot.vercel.app/api/knowledge-manage',
+    
     // EmailJS configuration (safe to expose - these are public IDs)
     emailJS: {
         serviceId: 'YOUR_SERVICE_ID',  // Add your EmailJS service ID here
