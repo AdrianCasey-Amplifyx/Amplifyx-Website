@@ -919,55 +919,14 @@ async function sendLeadEmail() {
     });
     localStorage.setItem('amplifyx_leads', JSON.stringify(leads));
     
-    // Send to Google Sheets
-    try {
-        // Direct implementation to avoid dependency issues
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyriir57ONb9FrzHomTEpMHdtEJwl_6kzjc5CAyfSej0bIjEzLveFIQ4XGlZoJjiD0/exec';
-        
-        // Ensure we have all the data from leadData - ALWAYS include phone even if empty
-        const googlePayload = {
-            referenceNumber: chatbotState.leadData.referenceNumber || '',
-            name: chatbotState.leadData.name || '',
-            email: chatbotState.leadData.email || '',
-            phone: chatbotState.leadData.phone || 'Not provided',  // Always include phone field
-            company: chatbotState.leadData.company || '',
-            projectType: chatbotState.leadData.projectType || '',
-            timeline: chatbotState.leadData.timeline || '',
-            budget: chatbotState.leadData.budget || '',
-            score: chatbotState.leadData.score || 0,
-            qualified: chatbotState.leadData.qualified || false,
-            timestamp: new Date().toISOString(),
-            conversation: chatbotState.conversationHistory
-        };
-        
-        console.log('📤 PAYLOAD BEING SENT TO GOOGLE SHEETS:');
-        console.log('- Reference:', googlePayload.referenceNumber);
-        console.log('- Name:', googlePayload.name);
-        console.log('- Email:', googlePayload.email);
-        console.log('- Phone:', googlePayload.phone);
-        console.log('- Company:', googlePayload.company);
-        console.log('- Project Type:', googlePayload.projectType);
-        console.log('- Timeline:', googlePayload.timeline);
-        console.log('- Budget:', googlePayload.budget);
-        console.log('- Score:', googlePayload.score);
-        console.log('- Qualified:', googlePayload.qualified);
-        console.log('- Full Payload:', JSON.stringify(googlePayload, null, 2));
-        
-        fetch(GOOGLE_SHEETS_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(googlePayload)
-        }).then(() => {
-            console.log('✅ Lead sent to Google Sheets');
-        }).catch(error => {
-            console.error('❌ Google Sheets error:', error);
-        });
-    } catch (error) {
-        console.error('Failed to send to Google Sheets:', error);
-    }
+    // Log lead submission for debugging
+    console.log('✅ Lead saved locally:', {
+        referenceNumber: chatbotState.leadData.referenceNumber,
+        name: chatbotState.leadData.name,
+        email: chatbotState.leadData.email,
+        score: chatbotState.leadData.score,
+        qualified: chatbotState.leadData.qualified
+    });
     
     // Send email if EmailJS is configured
     if (chatbotState.emailJSConfigured && typeof emailjs !== 'undefined') {

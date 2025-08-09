@@ -66,40 +66,48 @@ export default async function handler(req, res) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
     
-    if (supabaseUrl && supabaseServiceKey) {
-      // Use Supabase
-      const { saveLeadToSupabase } = await import('./supabase-client.js');
-      const result = await saveLeadToSupabase(leadData, sessionId, conversation);
-      
-      if (result.success) {
-        // Also save to Google Sheets as backup (optional)
-        await saveToGoogleSheets(leadData, sessionId);
-        
-        return res.status(200).json({
-          success: true,
-          referenceNumber: result.referenceNumber,
-          leadId: result.leadId,
-          message: 'Lead saved successfully'
-        });
-      } else {
-        console.error('Supabase save failed:', result.error);
-        // Fall back to Google Sheets
-        await saveToGoogleSheets(leadData, sessionId);
-        return res.status(200).json({
-          success: true,
-          referenceNumber: 'GS-' + Date.now().toString(36).toUpperCase(),
-          message: 'Lead saved to backup system'
-        });
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase not configured');
+      return res.status(500).json({
+        error: 'Database configuration missing',
+        details: 'Please configure Supabase environment variables'
+      });
+    }
+    
+    // Save to Supabase
+    const { saveLeadToSupabase } = await import('./supabase-client.js');
+    const result = await saveLeadToSupabase(leadData, sessionId, conversation);
+    
+    if (result.success) {
+      // Trigger admin notification for high-value leads
+      if (leadData.score >= 70) {
+        try {
+          // Call admin notification endpoint
+          await fetch('https://amplifyx-chatbot.vercel.app/api/admin-notify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              leadId: result.leadId,
+              referenceNumber: result.referenceNumber
+            })
+          });
+        } catch (notifyError) {
+          console.error('Admin notification failed:', notifyError);
+          // Don't fail the lead submission if notification fails
+        }
       }
-    } else {
-      // Supabase not configured, use Google Sheets
-      console.log('Supabase not configured, using Google Sheets');
-      const referenceNumber = await saveToGoogleSheets(leadData, sessionId);
       
       return res.status(200).json({
         success: true,
-        referenceNumber: referenceNumber,
-        message: 'Lead saved to Google Sheets'
+        referenceNumber: result.referenceNumber,
+        leadId: result.leadId,
+        message: 'Lead saved successfully'
+      });
+    } else {
+      console.error('Supabase save failed:', result.error);
+      return res.status(500).json({
+        error: 'Failed to save lead',
+        details: 'Database operation failed'
       });
     }
     
@@ -109,46 +117,5 @@ export default async function handler(req, res) {
       error: 'Failed to save lead',
       details: error.message
     });
-  }
-}
-
-// Backup function to save to Google Sheets
-async function saveToGoogleSheets(leadData, sessionId) {
-  try {
-    const webhookUrl = 'https://script.google.com/macros/s/AKfycbzdOCxdMt84zkzWsYpNsP1d7RU7swJKOwsUqeMFy1x3iJ-Hzr5eMGy3CcJJ-zPo2dRZ/exec';
-    
-    const sheetData = {
-      timestamp: new Date().toISOString(),
-      name: leadData.name || 'Not provided',
-      email: leadData.email,
-      phone: leadData.phone || 'Not provided',
-      company: leadData.company || 'Not provided',
-      projectType: leadData.projectType || 'Not specified',
-      timeline: leadData.timeline || 'Not specified',
-      budget: leadData.budget || 'Not specified',
-      score: leadData.score || 0,
-      qualified: leadData.score >= 60 ? 'Yes' : 'No',
-      sessionId: sessionId,
-      source: 'Chatbot Secure',
-      referenceNumber: 'GS-' + Date.now().toString(36).toUpperCase()
-    };
-    
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(sheetData)
-    });
-    
-    if (!response.ok) {
-      console.error('Google Sheets webhook failed:', response.status);
-    }
-    
-    return sheetData.referenceNumber;
-    
-  } catch (error) {
-    console.error('Error saving to Google Sheets:', error);
-    return 'ERR-' + Date.now().toString(36).toUpperCase();
   }
 }
