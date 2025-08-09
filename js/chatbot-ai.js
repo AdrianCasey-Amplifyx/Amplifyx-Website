@@ -38,14 +38,9 @@ CRITICAL: Never greet (no Hi/Hello). User already saw greeting. Go straight to t
 CONVERSATION FLOW:
 1. Understand their specific need
 2. Gather: name, company, email, phone, project details, timeline, budget
-3. When you have enough info, confirm details and ask if correct
-4. System will add confirm buttons automatically
+3. When you have enough info, show a clear summary and say "If this information is correct, I'll pass it to our team"
 
-CONFIRMATION FORMAT:
-Show details clearly, then add hidden data:
-<!--STRUCTURED_DATA:{"name":"X","company":"X","email":"X","phone":"X","projectType":"X","timeline":"X","budget":"X","score":0}-->
-
-IMPORTANT: Keep responses concise and professional. Focus on understanding their AI project needs.`;
+Keep responses concise and professional. Focus on understanding their AI project needs.`;
 
 // Chatbot State Management
 class ChatbotState {
@@ -450,52 +445,11 @@ async function handleAIConversation(message) {
         // Extract any fields from AI's understanding
         extractFieldsFromAIResponse(aiResponse);
         
-        // Extract structured data if present
-        const structuredDataMatch = aiResponse.match(/<!--STRUCTURED_DATA:([\s\S]*?)-->/);
-        if (structuredDataMatch) {
-            console.log('🔍 FOUND STRUCTURED DATA IN AI RESPONSE');
-            try {
-                const structuredData = JSON.parse(structuredDataMatch[1].trim());
-                console.log('📊 STRUCTURED DATA FROM AI:', structuredData);
-                
-                // ALWAYS update ALL fields from structured data (ensure phone is never undefined)
-                chatbotState.leadData.name = structuredData.name || chatbotState.leadData.name || '';
-                chatbotState.leadData.company = structuredData.company || chatbotState.leadData.company || '';
-                chatbotState.leadData.email = structuredData.email || chatbotState.leadData.email || '';
-                // Phone must always have a value to prevent column shift
-                chatbotState.leadData.phone = structuredData.phone || chatbotState.leadData.phone || '';
-                chatbotState.leadData.projectType = structuredData.projectType || chatbotState.leadData.projectType || '';
-                chatbotState.leadData.timeline = structuredData.timeline || chatbotState.leadData.timeline || '';
-                chatbotState.leadData.budget = structuredData.budget || chatbotState.leadData.budget || '';
-                
-                // Store AI score
-                if (structuredData.score) {
-                    chatbotState.leadData.aiScore = structuredData.score;
-                    chatbotState.leadData.score = structuredData.score; // Use AI score directly
-                }
-                
-                // Mark all provided fields as collected
-                if (structuredData.name !== null && structuredData.name !== undefined) chatbotState.fieldsCollected.name = true;
-                if (structuredData.company !== null && structuredData.company !== undefined) chatbotState.fieldsCollected.company = true;
-                if (structuredData.email !== null && structuredData.email !== undefined) chatbotState.fieldsCollected.email = true;
-                if (structuredData.phone !== null && structuredData.phone !== undefined) chatbotState.fieldsCollected.phone = true;
-                if (structuredData.projectType !== null && structuredData.projectType !== undefined) chatbotState.fieldsCollected.projectType = true;
-                if (structuredData.timeline !== null && structuredData.timeline !== undefined) chatbotState.fieldsCollected.timeline = true;
-                if (structuredData.budget !== null && structuredData.budget !== undefined) chatbotState.fieldsCollected.budget = true;
-                
-                console.log('✅ LEAD DATA AFTER STRUCTURED UPDATE:', chatbotState.leadData);
-                
-            } catch (e) {
-                console.error('❌ Failed to parse structured data:', e);
-                console.error('Raw data that failed:', structuredDataMatch[1]);
-            }
-            
-            // Remove the structured data from the displayed message
-            aiResponse = aiResponse.replace(/<!--STRUCTURED_DATA:[\s\S]*?-->/g, '');
-        } else {
-            console.log('⚠️ NO STRUCTURED DATA FOUND IN AI RESPONSE');
-            console.log('AI Response sample:', aiResponse.substring(0, 200));
-        }
+        // Skip structured data extraction - it's causing JSON parsing issues
+        // The AI will naturally show the confirmation in plain text instead
+        
+        // Remove any structured data tags if they appear
+        aiResponse = aiResponse.replace(/<!--STRUCTURED_DATA:[\s\S]*?-->/g, '');
         
         addBotMessage(aiResponse);
         
@@ -507,13 +461,12 @@ async function handleAIConversation(message) {
         // Check if AI is asking for confirmation
         const lowerResponse = aiResponse.toLowerCase();
         const isAIAskingForConfirmation = 
-            lowerResponse.includes('is this correct') ||
-            lowerResponse.includes('is this information correct') ||
-            lowerResponse.includes('is everything correct') ||
-            lowerResponse.includes('if that\'s everything correct') ||
-            lowerResponse.includes('if that\'s correct') ||
-            lowerResponse.includes("if that's everything correct") ||
-            lowerResponse.includes("i'll pass these details");
+            lowerResponse.includes('if this information is correct') ||
+            lowerResponse.includes('if this is correct') ||
+            lowerResponse.includes('pass it to our team') ||
+            lowerResponse.includes('pass these to our team') ||
+            lowerResponse.includes('confirm these details') ||
+            lowerResponse.includes('is this correct');
         
         // If AI is asking for confirmation, add buttons and set state
         if (isAIAskingForConfirmation && !chatbotState.submissionComplete && !chatbotState.awaitingConfirmation) {
