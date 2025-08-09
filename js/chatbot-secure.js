@@ -3,8 +3,8 @@
 
 // Configuration
 const CHATBOT_CONFIG = {
-    // OpenAI settings - uses proxy if available, direct API otherwise
-    apiEndpoint: window.AMPLIFYX_CONFIG?.apiProxyUrl || 'https://api.openai.com/v1/chat/completions',
+    // Secure API endpoint - uses server-side prompt and scoring
+    apiEndpoint: window.AMPLIFYX_CONFIG?.secureApiUrl || 'https://amplifyx-chatbot.vercel.app/api/chat-secure',
     model: 'gpt-4o-mini', // Upgraded for better understanding
     maxTokens: 250,
     temperature: 0.7,
@@ -298,8 +298,8 @@ function toggleChat() {
 async function initConversation() {
     chatbotMessages.innerHTML = '';
     
-    // Check if we have an API key OR a proxy endpoint
-    const hasProxy = window.AMPLIFYX_CONFIG?.apiProxyUrl;
+    // Check if we have an API key OR a secure API endpoint
+    const hasProxy = window.AMPLIFYX_CONFIG?.secureApiUrl;
     
     console.log('Checking AI availability:');
     console.log('- Config object:', window.AMPLIFYX_CONFIG);
@@ -444,9 +444,9 @@ async function handleAIConversation(message) {
             contextMessage = `\n\n[Context: Still need to collect: ${missingFields.join(', ')}. Work these into the conversation naturally.]`;
         }
         
-        // Determine the correct API endpoint (proxy or direct)
-        const apiEndpoint = window.AMPLIFYX_CONFIG?.apiProxyUrl || 
-                          (chatbotState.apiKey ? 'https://api.openai.com/v1/chat/completions' : null);
+        // Determine the correct API endpoint (secure endpoint)
+        const apiEndpoint = window.AMPLIFYX_CONFIG?.secureApiUrl || 
+                          CHATBOT_CONFIG.apiEndpoint;
         
         if (!apiEndpoint) {
             throw new Error('No API endpoint available');
@@ -585,7 +585,7 @@ async function handleAIConversation(message) {
         console.error('AI Error Details:');
         console.error('- Error message:', error.message);
         console.error('- Error object:', error);
-        console.error('- API endpoint attempted:', window.AMPLIFYX_CONFIG?.apiProxyUrl || 'Direct OpenAI');
+        console.error('- API endpoint attempted:', window.AMPLIFYX_CONFIG?.secureApiUrl || 'Direct OpenAI');
         
         // Show error message and disable chat
         addBotMessage("Sorry, the AI agent encountered an error and is temporarily unavailable. Please try again later or contact us directly at adrian@amplifyx.com.au.");
