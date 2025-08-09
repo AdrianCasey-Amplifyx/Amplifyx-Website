@@ -34,6 +34,7 @@ const CHATBOT_CONFIG = {
 const SYSTEM_PROMPT = `You are a consultation assistant for Amplifyx Technologies, an AI consultancy.
 
 CRITICAL: Never greet (no Hi/Hello). User already saw greeting. Go straight to their request.
+IMPORTANT: Do NOT generate reference numbers (like AMP-XXXXX). The system generates these automatically.
 
 CONVERSATION FLOW:
 1. Understand their specific need
@@ -484,6 +485,14 @@ async function handleAIConversation(message) {
         // If AI is asking for confirmation, add buttons and set state
         if (isAIAskingForConfirmation && !chatbotState.submissionComplete && !chatbotState.awaitingConfirmation) {
             console.log('✅ AI is asking for confirmation - adding buttons');
+            
+            // Generate reference number NOW, before showing confirmation
+            if (!chatbotState.leadData.referenceNumber) {
+                const referenceNumber = 'AMP-' + Date.now().toString(36).toUpperCase();
+                chatbotState.leadData.referenceNumber = referenceNumber;
+                console.log('📝 Generated Reference Number:', referenceNumber);
+            }
+            
             console.log('📋 Current Lead Data:', chatbotState.leadData);
             chatbotState.awaitingConfirmation = true;
             
@@ -772,9 +781,13 @@ async function completeQualification() {
     }
     chatbotState.leadData.qualified = chatbotState.leadData.score >= 60;
     
-    // Generate reference number
-    const referenceNumber = 'AMP-' + Date.now().toString(36).toUpperCase();
-    chatbotState.leadData.referenceNumber = referenceNumber;
+    // Generate reference number if not already generated
+    if (!chatbotState.leadData.referenceNumber) {
+        const referenceNumber = 'AMP-' + Date.now().toString(36).toUpperCase();
+        chatbotState.leadData.referenceNumber = referenceNumber;
+        console.log('📝 Generated Reference Number in completeQualification:', referenceNumber);
+    }
+    const referenceNumber = chatbotState.leadData.referenceNumber;
     
     // Submit to Supabase first
     const supabaseResult = await submitLeadToSupabase();
