@@ -57,6 +57,7 @@ export default async function handler(req, res) {
       projectType: structuredData.projectType || structuredData.project_type || null,
       timeline: structuredData.timeline || null,
       budget: structuredData.budget || null,
+      summary: structuredData.summary || null,
       score: structuredData.score || 0,
       referenceNumber: structuredData.referenceNumber || null, // Include reference number!
       userAgent: req.headers['user-agent'] || null,

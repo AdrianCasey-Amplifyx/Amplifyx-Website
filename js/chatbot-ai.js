@@ -518,7 +518,107 @@ async function handleAIConversation(message) {
     }
 }
 
-// Extract Fields from Message
+// Extract all data from conversation using AI
+async function extractDataWithAI(conversationHistory) {
+    console.log('🤖 Using AI to extract structured data from conversation...');
+    
+    // Create extraction prompt
+    const extractionPrompt = `Extract the following information from this conversation. Return ONLY valid JSON with these exact fields (use empty string "" if not found):
+
+{
+  "name": "full name of the person",
+  "company": "company or organization name",
+  "email": "email address",
+  "phone": "phone number",
+  "projectType": "what they need help with (be specific)",
+  "timeline": "when they need it (ASAP, 1-3 months, etc)",
+  "budget": "budget amount or range",
+  "summary": "2-3 sentence summary of their needs and situation"
+}
+
+IMPORTANT: 
+- Extract actual values from the conversation
+- For projectType, be specific about what they want
+- For summary, describe their situation and needs concisely
+- Return ONLY the JSON object, no other text`;
+
+    try {
+        const apiEndpoint = window.AMPLIFYX_CONFIG?.apiProxyUrl || 'https://api.openai.com/v1/chat/completions';
+        
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        
+        if (!apiEndpoint.includes('vercel.app') && chatbotState.apiKey) {
+            headers['Authorization'] = `Bearer ${chatbotState.apiKey}`;
+        }
+        
+        // Prepare conversation text
+        const conversationText = conversationHistory
+            .map(msg => `${msg.role.toUpperCase()}: ${msg.content}`)
+            .join('\n\n');
+        
+        const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                model: 'gpt-4o',
+                messages: [
+                    { 
+                        role: 'system', 
+                        content: extractionPrompt 
+                    },
+                    { 
+                        role: 'user', 
+                        content: conversationText 
+                    }
+                ],
+                max_tokens: 500,
+                temperature: 0.1 // Low temperature for consistent extraction
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Extraction API failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const extractedText = data.choices[0].message.content;
+        
+        // Parse the JSON response
+        try {
+            const extractedData = JSON.parse(extractedText);
+            console.log('✅ Successfully extracted data:', extractedData);
+            return extractedData;
+        } catch (parseError) {
+            console.error('Failed to parse extraction response:', extractedText);
+            // Try to extract JSON from the response if it contains other text
+            const jsonMatch = extractedText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const extractedData = JSON.parse(jsonMatch[0]);
+                console.log('✅ Extracted data from response:', extractedData);
+                return extractedData;
+            }
+            throw parseError;
+        }
+        
+    } catch (error) {
+        console.error('❌ AI extraction failed:', error);
+        // Return empty structure on failure
+        return {
+            name: '',
+            company: '',
+            email: '',
+            phone: '',
+            projectType: '',
+            timeline: '',
+            budget: '',
+            summary: ''
+        };
+    }
+}
+
+// Extract Fields from Message (legacy regex method - kept as fallback)
 function extractFieldsFromMessage(message) {
     // Email extraction
     const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
@@ -771,6 +871,23 @@ async function completeQualification() {
     // Mark as submitted BEFORE any async operations to prevent race conditions
     chatbotState.submissionComplete = true;
     
+    // Extract structured data from conversation using AI
+    const extractedData = await extractDataWithAI(chatbotState.conversationHistory);
+    
+    // Update lead data with AI-extracted values (override regex extraction)
+    if (extractedData.name) chatbotState.leadData.name = extractedData.name;
+    if (extractedData.company) chatbotState.leadData.company = extractedData.company;
+    if (extractedData.email) chatbotState.leadData.email = extractedData.email;
+    if (extractedData.phone) chatbotState.leadData.phone = extractedData.phone;
+    if (extractedData.projectType) chatbotState.leadData.projectType = extractedData.projectType;
+    if (extractedData.timeline) chatbotState.leadData.timeline = extractedData.timeline;
+    if (extractedData.budget) chatbotState.leadData.budget = extractedData.budget;
+    
+    // Add the summary (new field)
+    chatbotState.leadData.summary = extractedData.summary || '';
+    
+    console.log('📊 Final lead data after AI extraction:', chatbotState.leadData);
+    
     // Use AI score if available, otherwise calculate
     if (chatbotState.leadData.aiScore) {
         chatbotState.leadData.score = chatbotState.leadData.aiScore;
@@ -856,6 +973,7 @@ async function submitLeadToSupabase() {
                 projectType: chatbotState.leadData.projectType || '',
                 timeline: chatbotState.leadData.timeline || '',
                 budget: chatbotState.leadData.budget || '',
+                summary: chatbotState.leadData.summary || '',
                 qualified: chatbotState.leadData.qualified,
                 score: chatbotState.leadData.score,
                 referenceNumber: chatbotState.leadData.referenceNumber

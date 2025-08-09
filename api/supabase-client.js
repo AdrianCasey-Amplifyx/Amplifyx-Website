@@ -65,6 +65,7 @@ export async function saveLeadToSupabase(leadData, sessionId, conversation) {
         project_type: leadData.projectType || null,
         timeline: leadData.timeline || null,
         budget: leadData.budget || null,
+        summary: leadData.summary || null,
         score: leadData.score || 0,
         qualified: leadData.score >= 60
       })
