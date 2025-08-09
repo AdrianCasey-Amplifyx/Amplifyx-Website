@@ -728,6 +728,60 @@ function extractFieldsFromAIResponse(response) {
     // Add more patterns as needed
 }
 
+// Submit Lead to Supabase
+async function submitLeadToSupabase() {
+    try {
+        console.log('📤 Submitting lead to Supabase...');
+        
+        // Prepare submission data
+        const submissionData = {
+            sessionId: chatbotState.sessionId,
+            structuredData: {
+                name: chatbotState.leadData.name || '',
+                email: chatbotState.leadData.email || '',
+                phone: chatbotState.leadData.phone || '',
+                company: chatbotState.leadData.company || '',
+                projectType: chatbotState.leadData.projectType || '',
+                timeline: chatbotState.leadData.timeline || '',
+                budget: chatbotState.leadData.budget || '',
+                score: chatbotState.leadData.score || 0
+            },
+            conversation: chatbotState.conversationHistory
+        };
+        
+        console.log('Submission data:', submissionData);
+        
+        // Get the lead submission endpoint
+        const leadSubmitUrl = window.AMPLIFYX_CONFIG?.leadSubmitUrl || 'https://amplifyx-chatbot.vercel.app/api/lead-submit';
+        
+        // Submit to API
+        const response = await fetch(leadSubmitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Session-ID': chatbotState.sessionId
+            },
+            body: JSON.stringify(submissionData)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Lead submitted successfully:', result);
+            chatbotState.submissionComplete = true;
+            chatbotState.leadData.referenceNumber = result.referenceNumber;
+            return result;
+        } else {
+            const error = await response.text();
+            console.error('❌ Lead submission failed:', error);
+            throw new Error(error);
+        }
+    } catch (error) {
+        console.error('Failed to submit lead:', error);
+        // Continue with conversation even if submission fails
+        addBotMessage("I've noted your information. Our team will be in touch soon!");
+    }
+}
+
 // Add confirmation buttons only (AI handles the text display)
 function addConfirmationButtons() {
     const messageDiv = document.createElement('div');
@@ -740,7 +794,9 @@ function addConfirmationButtons() {
     const confirmBtn = document.createElement('button');
     confirmBtn.className = 'quick-action-btn';
     confirmBtn.textContent = "Yes, that's correct ✅";
-    confirmBtn.onclick = () => {
+    confirmBtn.onclick = async () => {
+        // Submit the lead to Supabase
+        await submitLeadToSupabase();
         chatbotInput.value = "Yes, that's correct ✅";
         handleSubmit(new Event('submit'));
     };
