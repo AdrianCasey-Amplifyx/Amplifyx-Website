@@ -41,3 +41,9 @@ dist/
 build/js/config.js
 .vercel
 .env*.local
+
+# Population scripts (contain API keys)
+populate-knowledge*.js
+
+# MCP Server config
+claude.mcp.json
