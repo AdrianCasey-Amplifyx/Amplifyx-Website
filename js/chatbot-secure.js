@@ -509,7 +509,16 @@ async function handleAIConversation(message) {
         if (structuredDataMatch) {
             console.log('🔍 FOUND STRUCTURED DATA IN AI RESPONSE');
             try {
-                const structuredData = JSON.parse(structuredDataMatch[1].trim());
+                // Fix common JSON issues from AI response
+                let jsonString = structuredDataMatch[1].trim();
+                // Replace single quotes with double quotes for JSON compatibility
+                jsonString = jsonString.replace(/'/g, '"');
+                // Fix any property names that might not be quoted
+                jsonString = jsonString.replace(/(\w+):/g, '"$1":');
+                // Fix double-quoted property names (from previous fix)
+                jsonString = jsonString.replace(/""+/g, '"');
+                
+                const structuredData = JSON.parse(jsonString);
                 console.log('📊 STRUCTURED DATA FROM AI:', structuredData);
                 
                 // ALWAYS update ALL fields from structured data (ensure phone is never undefined)
