@@ -886,6 +886,8 @@ async function completeQualification() {
     // Add the summary (new field)
     chatbotState.leadData.summary = extractedData.summary || '';
     
+    console.log('📊 Extracted data from AI:', extractedData);
+    console.log('📝 Summary extracted:', extractedData.summary);
     console.log('📊 Final lead data after AI extraction:', chatbotState.leadData);
     
     // Use AI score if available, otherwise calculate
@@ -980,6 +982,8 @@ async function submitLeadToSupabase() {
             },
             conversation: chatbotState.conversationHistory.slice(-20) // Last 20 messages
         };
+        
+        console.log('📤 Summary being sent to Supabase:', submissionData.structuredData.summary);
         
         // Get the lead submission endpoint
         const leadSubmitUrl = window.AMPLIFYX_CONFIG?.leadSubmitUrl || 'https://amplifyx-chatbot.vercel.app/api/lead-submit';
