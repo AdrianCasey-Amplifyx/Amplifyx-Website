@@ -402,17 +402,17 @@ async function handleAIConversation(message) {
     
     try {
         // Use RAG to augment the message with knowledge base context
-        let augmentedUserMessage = userMessage;
+        let augmentedUserMessage = message;
         let ragContext = "";
         
         // Skip RAG for quick action buttons
         const quickActions = ["Book a Discovery Call", "Learn More About Amplifyx", "Something Else"];
-        const skipRAG = quickActions.includes(userMessage);
+        const skipRAG = quickActions.includes(message);
         
         if (!skipRAG && window.RAGHelper && window.RAGHelper.augmentMessageWithRAG) {
             console.log('🔍 Using RAG to search knowledge base...');
             try {
-                const ragResult = await window.RAGHelper.augmentMessageWithRAG(userMessage, chatbotState.conversationHistory);
+                const ragResult = await window.RAGHelper.augmentMessageWithRAG(message, chatbotState.conversationHistory);
                 if (ragResult && ragResult.context) {
                     console.log('📚 Found relevant knowledge, adding to context');
                     ragContext = ragResult.context;
