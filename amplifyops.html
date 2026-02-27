@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="AmplifyOps — managed AI automations by Amplifyx. Tell us what you need automated. We build it, host it, maintain it. You just use it.">
+    <meta name="keywords" content="AI automation, managed automation, business operations, AmplifyOps, Amplifyx, micro-automation">
+    <meta name="author" content="Amplifyx Technologies">
+
+    <meta property="og:title" content="AmplifyOps — Managed AI Automations by Amplifyx">
+    <meta property="og:description" content="Tell us what you need automated. We build it, host it, maintain it. You just use it.">
+    <meta property="og:url" content="https://amplifyx.com.au/amplifyops">
+    <meta property="og:type" content="website">
+
+    <title>AmplifyOps — Managed AI Automations | Amplifyx Technologies</title>
+
+    <link rel="preload" href="css/amplifyops.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style">
+
+    <link rel="stylesheet" href="css/amplifyops.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="ops-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/">
+                    <img src="assets/images/logo.svg" alt="Amplifyx Technologies" style="height: 50px;">
+                </a>
+            </div>
+
+            <div class="nav-menu" id="opsNavMenu">
+                <a href="#patterns" class="nav-link">How It Works</a>
+                <a href="#recipes" class="nav-link">Recipes</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#get-started" class="nav-link">Get Started</a>
+            </div>
+
+            <div class="nav-cta">
+                <a href="#get-started" class="btn btn-primary">Get Started</a>
+            </div>
+
+            <div class="nav-toggle" id="opsNavToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="ops-hero">
+        <div class="container">
+            <p class="hero-tagline">AMPLIFY<span class="brand-x-hero">OPS</span></p>
+            <h1>We Don't Give You an Automation Tool.<br>We Give You <span class="text-gradient">Automated Operations.</span></h1>
+            <p class="hero-sub">Tell us what you need automated. We build it, host it, and maintain it. You just use it.</p>
+
+            <div class="hero-ctas">
+                <a href="#get-started" class="btn btn-primary btn-large">Build a Recipe</a>
+                <a href="#recipes" class="btn btn-secondary btn-large">See How It Works</a>
+            </div>
+        </div>
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <p class="section-tagline fade-in">THE DIY AUTOMATION GAP</p>
+            <h2 class="section-title fade-in">Three Broken Paths to Automation</h2>
+            <p class="section-subtitle fade-in">Every SMB hits the same wall. The tools exist, but the outcomes don't.</p>
+
+            <div class="problem-grid">
+                <div class="problem-card fade-in fade-in-delay-1">
+                    <div class="problem-icon">🔧</div>
+                    <h3>Self-Service Platforms</h3>
+                    <p class="problem-tool">Zapier, Make, Power Automate</p>
+                    <p>"You build it, you debug it at 11pm. And you still need to know what you're doing."</p>
+                </div>
+                <div class="problem-card fade-in fade-in-delay-2">
+                    <div class="problem-icon">💸</div>
+                    <h3>Custom Development</h3>
+                    <p class="problem-tool">Agencies & Freelancers</p>
+                    <p>"$5-10K+ and weeks of waiting for a simple email-to-CRM flow."</p>
+                </div>
+                <div class="problem-card fade-in fade-in-delay-3">
+                    <div class="problem-icon">🤖</div>
+                    <h3>Raw AI Tools</h3>
+                    <p class="problem-tool">ChatGPT, Claude, Gemini</p>
+                    <p>"Inconsistent outputs, no methodology, no memory. Great for demos, not for ops."</p>
+                </div>
+            </div>
+
+            <p class="problem-closing fade-in">There's a better way. What if someone just... <span>did it for you?</span></p>
+        </div>
+    </section>
+
+    <!-- How It Works — 4 Patterns -->
+    <section id="patterns" class="patterns-section">
+        <div class="container">
+            <p class="section-tagline fade-in">HOW IT WORKS</p>
+            <h2 class="section-title fade-in">Four Ways to Automate Anything</h2>
+            <p class="section-subtitle fade-in">Every automation we build follows one of four simple patterns. You pick the shape — we handle the rest.</p>
+
+            <div class="patterns-grid">
+                <div class="pattern-card monitor fade-in fade-in-delay-1">
+                    <div class="pattern-icon">👁️</div>
+                    <h3>MONITOR</h3>
+                    <p class="pattern-flow">Watch → Detect → Alert/Act</p>
+                    <p>Continuously scan sources for changes, threats, or opportunities — then notify or respond automatically.</p>
+                </div>
+                <div class="pattern-card upload fade-in fade-in-delay-2">
+                    <div class="pattern-icon">📤</div>
+                    <h3>UPLOAD</h3>
+                    <p class="pattern-flow">Receive → Analyse → Generate</p>
+                    <p>Drop in a file or data — get back structured insights, summaries, or transformed outputs.</p>
+                </div>
+                <div class="pattern-card connect fade-in fade-in-delay-3">
+                    <div class="pattern-icon">🔗</div>
+                    <h3>CONNECT</h3>
+                    <p class="pattern-flow">Bridge → Sync → Maintain</p>
+                    <p>Keep your tools talking to each other. Bi-directional sync that just works.</p>
+                </div>
+                <div class="pattern-card schedule fade-in fade-in-delay-4">
+                    <div class="pattern-icon">📅</div>
+                    <h3>SCHEDULE</h3>
+                    <p class="pattern-flow">Gather → Compile → Deliver</p>
+                    <p>Automated reports and actions on your schedule — daily, weekly, monthly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recipe Examples -->
+    <section id="recipes" class="recipes-section">
+        <div class="container">
+            <p class="section-tagline fade-in">SEE HOW IT WORKS</p>
+            <h2 class="section-title fade-in">Every Automation Is a Simple Recipe</h2>
+            <p class="section-subtitle fade-in">Every automation is just a trigger, some AI processing, and an output. Here's what that looks like in practice.</p>
+
+            <div class="example-recipes">
+                <div class="example-recipe fade-in">
+                    <div class="example-label">Competitor Intelligence</div>
+                    <div class="recipe-flow-visual">
+                        <div class="flow-step monitor">
+                            <div class="flow-step-icon">👁️</div>
+                            <div class="flow-step-text">Watch competitor website</div>
+                            <span class="flow-step-badge">Monitor</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step process">
+                            <div class="flow-step-icon">🤖</div>
+                            <div class="flow-step-text">AI analyses changes & pricing</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step output">
+                            <div class="flow-step-icon">📧</div>
+                            <div class="flow-step-text">Insights emailed to you</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-recipe fade-in">
+                    <div class="example-label">Invoice Processing</div>
+                    <div class="recipe-flow-visual">
+                        <div class="flow-step upload">
+                            <div class="flow-step-icon">📤</div>
+                            <div class="flow-step-text">Email with invoice arrives</div>
+                            <span class="flow-step-badge">Upload</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step process">
+                            <div class="flow-step-icon">🤖</div>
+                            <div class="flow-step-text">AI extracts line items & totals</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step output">
+                            <div class="flow-step-icon">📊</div>
+                            <div class="flow-step-text">Data pushed to Xero</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-recipe fade-in">
+                    <div class="example-label">Weekly Business Pulse</div>
+                    <div class="recipe-flow-visual">
+                        <div class="flow-step schedule">
+                            <div class="flow-step-icon">📅</div>
+                            <div class="flow-step-text">Every Monday at 7am</div>
+                            <span class="flow-step-badge">Schedule</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step process">
+                            <div class="flow-step-icon">🤖</div>
+                            <div class="flow-step-text">AI compiles KPIs & insights</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step output">
+                            <div class="flow-step-icon">📋</div>
+                            <div class="flow-step-text">Report to your inbox</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-recipe fade-in">
+                    <div class="example-label">CRM ↔ Accounting Sync</div>
+                    <div class="recipe-flow-visual">
+                        <div class="flow-step connect">
+                            <div class="flow-step-icon">🔗</div>
+                            <div class="flow-step-text">New deal closed in CRM</div>
+                            <span class="flow-step-badge">Connect</span>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step process">
+                            <div class="flow-step-icon">🤖</div>
+                            <div class="flow-step-text">AI maps fields & validates</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step output">
+                            <div class="flow-step-icon">💰</div>
+                            <div class="flow-step-text">Invoice created in Xero</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="examples-cta fade-in">These are just examples. You can compose any automation from the building blocks below.</p>
+        </div>
+    </section>
+
+    <!-- Recipe Builder + Form -->
+    <section id="get-started" class="builder-section">
+        <div class="container">
+            <p class="section-tagline fade-in">BUILD YOUR RECIPE</p>
+            <h2 class="section-title fade-in">What Do You Want to Automate?</h2>
+            <p class="section-subtitle fade-in">Pick your building blocks, describe what you need, and we'll build it for you.</p>
+
+            <form id="opsEnquiryForm" class="builder-form fade-in">
+                <div id="enquiryFormContent">
+
+                    <!-- Live Flow Preview -->
+                    <div class="builder-preview" id="builderPreview">
+                        <div class="preview-step" id="previewTrigger"><span class="preview-placeholder">Trigger</span></div>
+                        <div class="preview-arrow">→</div>
+                        <div class="preview-step" id="previewProcess"><span class="preview-placeholder">Process</span></div>
+                        <div class="preview-arrow">→</div>
+                        <div class="preview-step" id="previewOutput"><span class="preview-placeholder">Output</span></div>
+                    </div>
+
+                    <!-- Step 1: Trigger -->
+                    <div class="builder-step">
+                        <h3 class="builder-step-title"><span class="step-num">1</span> What triggers it?</h3>
+                        <div class="builder-options" data-step="trigger">
+                            <label class="builder-option monitor">
+                                <input type="radio" name="trigger" value="Watch a website or feed">
+                                <div class="option-content">
+                                    <span class="option-icon">👁️</span>
+                                    <span class="option-label">Watch a website or feed</span>
+                                </div>
+                            </label>
+                            <label class="builder-option monitor">
+                                <input type="radio" name="trigger" value="Incoming email arrives">
+                                <div class="option-content">
+                                    <span class="option-icon">📨</span>
+                                    <span class="option-label">Incoming email arrives</span>
+                                </div>
+                            </label>
+                            <label class="builder-option upload">
+                                <input type="radio" name="trigger" value="File or document uploaded">
+                                <div class="option-content">
+                                    <span class="option-icon">📤</span>
+                                    <span class="option-label">File or document uploaded</span>
+                                </div>
+                            </label>
+                            <label class="builder-option connect">
+                                <input type="radio" name="trigger" value="Event in another tool">
+                                <div class="option-content">
+                                    <span class="option-icon">🔗</span>
+                                    <span class="option-label">Event in another tool</span>
+                                </div>
+                            </label>
+                            <label class="builder-option schedule">
+                                <input type="radio" name="trigger" value="On a schedule">
+                                <div class="option-content">
+                                    <span class="option-icon">📅</span>
+                                    <span class="option-label">On a schedule</span>
+                                </div>
+                            </label>
+                            <label class="builder-option other">
+                                <input type="radio" name="trigger" value="Something else">
+                                <div class="option-content">
+                                    <span class="option-icon">✨</span>
+                                    <span class="option-label">Something else</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Processing -->
+                    <div class="builder-step">
+                        <h3 class="builder-step-title"><span class="step-num">2</span> What should happen?</h3>
+                        <div class="builder-options multi" data-step="process">
+                            <label class="builder-option">
+                                <input type="checkbox" name="process" value="Analyse & summarise">
+                                <div class="option-content">
+                                    <span class="option-icon">🧠</span>
+                                    <span class="option-label">Analyse & summarise</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="process" value="Extract structured data">
+                                <div class="option-content">
+                                    <span class="option-icon">📋</span>
+                                    <span class="option-label">Extract structured data</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="process" value="Compare or detect changes">
+                                <div class="option-content">
+                                    <span class="option-icon">🔍</span>
+                                    <span class="option-label">Compare or detect changes</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="process" value="Generate a report or document">
+                                <div class="option-content">
+                                    <span class="option-icon">📝</span>
+                                    <span class="option-label">Generate a report or document</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="process" value="Categorise or route">
+                                <div class="option-content">
+                                    <span class="option-icon">🏷️</span>
+                                    <span class="option-label">Categorise or route</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="process" value="Not sure — help me figure it out">
+                                <div class="option-content">
+                                    <span class="option-icon">💬</span>
+                                    <span class="option-label">Not sure yet</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Output -->
+                    <div class="builder-step">
+                        <h3 class="builder-step-title"><span class="step-num">3</span> Where should the result go?</h3>
+                        <div class="builder-options multi" data-step="output">
+                            <label class="builder-option">
+                                <input type="checkbox" name="output" value="Email">
+                                <div class="option-content">
+                                    <span class="option-icon">📧</span>
+                                    <span class="option-label">Email</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="output" value="Slack or Teams">
+                                <div class="option-content">
+                                    <span class="option-icon">💬</span>
+                                    <span class="option-label">Slack / Teams</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="output" value="Spreadsheet">
+                                <div class="option-content">
+                                    <span class="option-icon">📊</span>
+                                    <span class="option-label">Spreadsheet</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="output" value="Accounting software">
+                                <div class="option-content">
+                                    <span class="option-icon">💰</span>
+                                    <span class="option-label">Accounting (Xero, MYOB)</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="output" value="CRM">
+                                <div class="option-content">
+                                    <span class="option-icon">👥</span>
+                                    <span class="option-label">CRM</span>
+                                </div>
+                            </label>
+                            <label class="builder-option">
+                                <input type="checkbox" name="output" value="Other / not sure">
+                                <div class="option-content">
+                                    <span class="option-icon">✨</span>
+                                    <span class="option-label">Other / not sure</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Describe -->
+                    <div class="builder-step">
+                        <h3 class="builder-step-title"><span class="step-num">4</span> Describe it in your own words</h3>
+                        <div class="form-group">
+                            <textarea name="automations" rows="4" placeholder="e.g. Every time a competitor updates their pricing page, I want an AI summary of what changed and how it compares to our pricing, sent to my email by morning."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Contact -->
+                    <div class="builder-step">
+                        <h3 class="builder-step-title"><span class="step-num">5</span> How do we reach you?</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Name <span class="required">*</span></label>
+                                <input type="text" name="name" required placeholder="Your full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email <span class="required">*</span></label>
+                                <input type="email" name="email" required placeholder="you@company.com">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Company</label>
+                                <input type="text" name="company" placeholder="Your company">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" name="phone" placeholder="+61 4XX XXX XXX">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-submit">
+                        <button type="submit" class="btn btn-primary btn-large">Send My Recipe</button>
+                    </div>
+                </div>
+
+                <div id="enquirySuccess" class="form-success">
+                    <h3>Recipe received!</h3>
+                    <p>We'll review your automation and get back to you within 24 hours with a plan and quote.</p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Pricing Overview -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <p class="section-tagline fade-in">PRICING</p>
+            <h2 class="section-title fade-in">Simple, Transparent Pricing</h2>
+            <p class="section-subtitle fade-in">One-time setup fee based on complexity. Running costs are usage-based — you only pay for what you use.</p>
+
+            <div class="pricing-grid">
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Simple</div>
+                    <div class="pricing-amount">$149-249<span> setup</span></div>
+                    <div class="pricing-range">Per recipe</div>
+                    <ul class="pricing-features">
+                        <li>Single trigger and output</li>
+                        <li>One integration</li>
+                        <li>Straightforward AI processing</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Standard</div>
+                    <div class="pricing-amount">$349-599<span> setup</span></div>
+                    <div class="pricing-range">Per recipe</div>
+                    <ul class="pricing-features">
+                        <li>Multiple inputs or outputs</li>
+                        <li>2-3 integrations</li>
+                        <li>AI analysis with human review</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Complex</div>
+                    <div class="pricing-amount">$799-1,499<span> setup</span></div>
+                    <div class="pricing-range">Per recipe</div>
+                    <ul class="pricing-features">
+                        <li>Multi-step pipeline</li>
+                        <li>3+ integrations</li>
+                        <li>Deep AI reasoning & orchestration</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pricing-extras fade-in">
+                <div class="pricing-extra-card">
+                    <h4>Fully Custom</h4>
+                    <p>Bespoke automation for unique workflows</p>
+                    <div class="extra-price">$2,000-8,000 setup</div>
+                </div>
+                <div class="pricing-extra-card">
+                    <h4>Priority Support</h4>
+                    <p>Dedicated Slack channel, 2-hour response SLA</p>
+                    <div class="extra-price">$199/mo add-on</div>
+                </div>
+            </div>
+
+            <p class="pricing-note fade-in">Running costs are usage-based and vary by recipe. AI token costs, infrastructure, and execution are billed transparently each month.</p>
+        </div>
+    </section>
+
+    <!-- How It's Different -->
+    <section class="comparison-section">
+        <div class="container">
+            <p class="section-tagline fade-in">WHY US</p>
+            <h2 class="section-title fade-in">You Describe It. We Build It.</h2>
+            <p class="section-subtitle fade-in">No learning curve. No debugging at 11pm. No six-figure consulting engagement.</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card fade-in">
+                    <div class="comp-vs">vs Self-Service</div>
+                    <h3>Zapier / Make</h3>
+                    <p class="comp-them">You build it, you maintain it</p>
+                    <p class="comp-us">You describe it, we build it</p>
+                </div>
+                <div class="comparison-card fade-in">
+                    <div class="comp-vs">vs Custom Dev</div>
+                    <h3>Agencies & Freelancers</h3>
+                    <p class="comp-them">$5-10K+ per automation</p>
+                    <p class="comp-us">From $149 setup + usage</p>
+                </div>
+                <div class="comparison-card fade-in">
+                    <div class="comp-vs">vs Raw AI</div>
+                    <h3>ChatGPT / Claude</h3>
+                    <p class="comp-them">Inconsistent, no monitoring</p>
+                    <p class="comp-us">Structured, repeatable, monitored</p>
+                </div>
+            </div>
+
+            <div class="trust-signals fade-in">
+                <div class="trust-signal"><span class="trust-icon">🔒</span> Tenant-isolated infrastructure</div>
+                <div class="trust-signal"><span class="trust-icon">🛡️</span> SOC 2 compliance path</div>
+                <div class="trust-signal"><span class="trust-icon">🤖</span> Claude AI-powered</div>
+                <div class="trust-signal"><span class="trust-icon">🇦🇺</span> Australian-built and operated</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2 class="fade-in">Ready to Stop Doing It All Yourself?</h2>
+            <p class="fade-in">Book a discovery call and we'll map out your first automation in 30 minutes.</p>
+            <a href="https://calendly.com/amplifyx" class="btn btn-primary btn-large fade-in">Book a Discovery Call</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="ops-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Amplifyx Technologies</h3>
+                    <p>Amplify<span class="brand-x-suffix">Ops</span> — managed AI automations for SMBs. You describe it, we build it, you use it.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <a href="/">Homepage</a>
+                        <a href="amplifyops.html">AmplifyOps</a>
+                        <a href="https://linkedin.com/company/amplifyx">LinkedIn</a>
+                    </div>
+                    <div class="footer-column">
+                        <a href="#patterns">How It Works</a>
+                        <a href="#recipes">Recipes</a>
+                        <a href="#pricing">Pricing</a>
+                        <a href="#get-started">Get Started</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 Amplifyx Technologies. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-container" class="chatbot-container">
+        <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Open chat">
+            <svg class="chat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M20 2H4C2.9 2 2 2.9 2 4V18C2 19.1 2.9 20 4 20H8L12 23L16 20H20C21.1 20 22 19.1 22 18V4C22 2.9 21.1 2 20 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 9H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 13H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: none;">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="chat-badge" style="display: none;">1</span>
+        </button>
+
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chatbot-header-content">
+                    <div class="chatbot-avatar">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" fill="url(#gradient)" opacity="0.2"/>
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#7B3FF2"/>
+                                    <stop offset="100%" style="stop-color:#E94CFF"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="chatbot-header-text">
+                        <h3>Amplifyx AI Assistant</h3>
+                        <p>Let's discuss your project</p>
+                    </div>
+                </div>
+                <button id="chatbot-minimize" class="chatbot-minimize" aria-label="Minimize chat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="chat-message bot">
+                    <div class="message-content">
+                        <p>Hi! I'm here to help you explore how Amplifyx can accelerate your product development with AI.</p>
+                        <p>What brings you here today?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chatbot-input-container">
+                <form id="chatbot-form" class="chatbot-form">
+                    <input
+                        type="text"
+                        id="chatbot-input"
+                        class="chatbot-input"
+                        placeholder="Type your message..."
+                        autocomplete="off"
+                        maxlength="500"
+                    />
+                    <button type="submit" class="chatbot-send" aria-label="Send message">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </form>
+                <div class="chatbot-footer">
+                    <p>Powered by Amplifyx AI</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="js/config-public.js"></script>
+    <script src="js/rag-helper.js"></script>
+    <script src="js/amplifyops.js"></script>
+    <script src="js/chatbot-ai.js" defer></script>
+</body>
+</html>
