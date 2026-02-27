@@ -344,7 +344,7 @@ async function handleAIConversation(message) {
     
     // Handle quick action buttons with direct responses
     if (message === "Book a Discovery Call") {
-        const response = "Excellent! I'd be happy to help you schedule a discovery call. Our team is available for consultations to discuss your AI and product development needs.\n\nYou can book a call directly at: https://calendly.com/amplifyx\n\nAlternatively, you can email us at adrian@amplifyx.com.au with your preferred times.\n\nCould you tell me a bit about your project so I can make sure we have the right team members on the call?";
+        const response = "Excellent! I'd be happy to help you schedule a discovery call. Our team is available for consultations to discuss your AI and product development needs.\n\nYou can email us at adrian@amplifyx.com.au with your preferred times, or fill out the enquiry form on our site and we'll be in touch within 24 hours.\n\nCould you tell me a bit about your project so I can make sure we have the right team members on the call?";
         addBotMessage(response);
         chatbotState.conversationHistory.push({
             role: 'assistant',

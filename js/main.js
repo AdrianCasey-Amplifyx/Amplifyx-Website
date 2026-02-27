@@ -112,8 +112,11 @@ document.querySelectorAll('.solution-card, .service-card, .testimonial-card').fo
 function handleContactForm(e) {
     e.preventDefault();
     // Add form submission logic here
-    // For now, redirect to Calendly
-    window.open('https://calendly.com/amplifyx', '_blank');
+    // Scroll to contact section
+    const contact = document.querySelector('#contact');
+    if (contact) {
+        contact.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 // Add loading animation
