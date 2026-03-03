@@ -152,7 +152,7 @@
 
             <div class="example-recipes">
                 <div class="example-recipe fade-in">
-                    <div class="example-label">Competitor Intelligence</div>
+                    <div class="example-label">Competitor Intelligence <span class="tier-badge simple">Simple</span></div>
                     <div class="recipe-flow-visual">
                         <div class="flow-step monitor">
                             <div class="flow-step-icon">👁️</div>
@@ -173,7 +173,7 @@
                 </div>
 
                 <div class="example-recipe fade-in">
-                    <div class="example-label">Invoice Processing</div>
+                    <div class="example-label">Invoice Processing <span class="tier-badge medium">Medium</span></div>
                     <div class="recipe-flow-visual">
                         <div class="flow-step upload">
                             <div class="flow-step-icon">📤</div>
@@ -194,7 +194,7 @@
                 </div>
 
                 <div class="example-recipe fade-in">
-                    <div class="example-label">Weekly Business Pulse</div>
+                    <div class="example-label">Weekly Business Pulse <span class="tier-badge medium">Medium</span></div>
                     <div class="recipe-flow-visual">
                         <div class="flow-step schedule">
                             <div class="flow-step-icon">📅</div>
@@ -215,7 +215,7 @@
                 </div>
 
                 <div class="example-recipe fade-in">
-                    <div class="example-label">CRM ↔ Accounting Sync</div>
+                    <div class="example-label">CRM ↔ Accounting Sync <span class="tier-badge complex">Complex</span></div>
                     <div class="recipe-flow-visual">
                         <div class="flow-step connect">
                             <div class="flow-step-icon">🔗</div>
@@ -456,40 +456,43 @@
     <section id="pricing" class="pricing-section">
         <div class="container">
             <p class="section-tagline fade-in">PRICING</p>
-            <h2 class="section-title fade-in">Simple, Transparent Pricing</h2>
-            <p class="section-subtitle fade-in">One-time setup fee based on complexity. Running costs are usage-based — you only pay for what you use.</p>
+            <h2 class="section-title fade-in">Tiered by Integration Complexity</h2>
+            <p class="section-subtitle fade-in">One-time setup fee based on how deeply we integrate with your systems. Running costs are usage-based — you only pay for what you use.</p>
 
             <div class="pricing-grid">
-                <div class="pricing-card fade-in">
+                <div class="pricing-card tier-simple fade-in">
                     <div class="pricing-tier">Simple</div>
-                    <div class="pricing-amount">$149-249<span> setup</span></div>
+                    <div class="pricing-integration">No API keys — web scraping only</div>
+                    <div class="pricing-amount">$300–500<span> setup</span></div>
                     <div class="pricing-range">Per recipe</div>
                     <ul class="pricing-features">
-                        <li>Single trigger and output</li>
-                        <li>One integration</li>
-                        <li>Straightforward AI processing</li>
+                        <li>Public web scraping &amp; monitoring</li>
+                        <li>No authentication required</li>
+                        <li>Email or webhook output</li>
                     </ul>
                 </div>
 
-                <div class="pricing-card fade-in">
-                    <div class="pricing-tier">Standard</div>
-                    <div class="pricing-amount">$349-599<span> setup</span></div>
+                <div class="pricing-card tier-medium fade-in">
+                    <div class="pricing-tier">Medium</div>
+                    <div class="pricing-integration">API key integrations</div>
+                    <div class="pricing-amount">$500–1,000<span> setup</span></div>
                     <div class="pricing-range">Per recipe</div>
                     <ul class="pricing-features">
+                        <li>API key-based integrations</li>
                         <li>Multiple inputs or outputs</li>
-                        <li>2-3 integrations</li>
-                        <li>AI analysis with human review</li>
+                        <li>AI analysis with structured data</li>
                     </ul>
                 </div>
 
-                <div class="pricing-card fade-in">
+                <div class="pricing-card tier-complex fade-in">
                     <div class="pricing-tier">Complex</div>
-                    <div class="pricing-amount">$799-1,499<span> setup</span></div>
+                    <div class="pricing-integration">OAuth / user access (refresh tokens)</div>
+                    <div class="pricing-amount">$1,000–2,000<span> setup</span></div>
                     <div class="pricing-range">Per recipe</div>
                     <ul class="pricing-features">
-                        <li>Multi-step pipeline</li>
-                        <li>3+ integrations</li>
-                        <li>Deep AI reasoning & orchestration</li>
+                        <li>OAuth &amp; refresh token integrations</li>
+                        <li>Multi-step pipelines &amp; orchestration</li>
+                        <li>Deep AI reasoning across systems</li>
                     </ul>
                 </div>
             </div>
@@ -529,7 +532,7 @@
                     <div class="comp-vs">vs Custom Dev</div>
                     <h3>Agencies & Freelancers</h3>
                     <p class="comp-them">$5-10K+ per automation</p>
-                    <p class="comp-us">From $149 setup + usage</p>
+                    <p class="comp-us">From $300 setup + usage</p>
                 </div>
                 <div class="comparison-card fade-in">
                     <div class="comp-vs">vs Raw AI</div>

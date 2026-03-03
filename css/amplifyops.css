@@ -511,6 +511,44 @@ section {
 .pattern-card.connect .pattern-count { color: var(--color-connect); }
 .pattern-card.schedule .pattern-count { color: var(--color-schedule); }
 
+/* ===== TIER BADGES ===== */
+.tier-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.tier-badge.simple {
+    background: rgba(0, 230, 118, 0.12);
+    color: #00E676;
+}
+
+.tier-badge.medium {
+    background: rgba(255, 145, 0, 0.12);
+    color: #FF9100;
+}
+
+.tier-badge.complex {
+    background: rgba(233, 76, 255, 0.12);
+    color: #E94CFF;
+}
+
+/* ===== PRICING TIER COLORS ===== */
+.pricing-card.tier-simple .pricing-tier { color: #00E676; }
+.pricing-card.tier-medium .pricing-tier { color: #FF9100; }
+.pricing-card.tier-complex .pricing-tier { color: #E94CFF; }
+
+.pricing-card .pricing-integration {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: var(--spacing-sm);
+}
+
 /* ===== EXAMPLE RECIPES ===== */
 .recipes-section {
     background: var(--color-bg-secondary);
