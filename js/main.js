@@ -62,11 +62,11 @@ const observer = new IntersectionObserver((entries) => {
             
             // Add stagger effect for grid items - much faster
             if (entry.target.classList.contains('stagger-item')) {
-                const items = entry.target.querySelectorAll('.solution-card, .service-card, .client-type');
+                const items = entry.target.querySelectorAll('.product-card, .audience-card');
                 items.forEach((item, index) => {
                     setTimeout(() => {
                         item.classList.add('visible');
-                    }, index * 20); // Was 100ms, now 20ms
+                    }, index * 20);
                 });
             }
         }
@@ -80,7 +80,7 @@ document.querySelectorAll('section').forEach(section => {
 });
 
 // Observe grids for stagger animations
-document.querySelectorAll('.solutions-grid, .services-grid, .clients-grid').forEach(grid => {
+document.querySelectorAll('.products-grid, .audience-grid').forEach(grid => {
     grid.classList.add('stagger-item');
     observer.observe(grid);
 });
@@ -97,7 +97,7 @@ window.addEventListener('scroll', () => {
 });
 
 // Add hover effect to cards
-document.querySelectorAll('.solution-card, .service-card, .testimonial-card').forEach(card => {
+document.querySelectorAll('.product-card, .audience-card').forEach(card => {
     card.addEventListener('mouseenter', function(e) {
         const rect = this.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -137,110 +137,6 @@ if ('loading' in HTMLImageElement.prototype) {
     document.body.appendChild(script);
 }
 
-// Interactive Demo Functionality
-const demoButtons = document.querySelectorAll('.demo-btn');
-const demoScreens = document.querySelectorAll('.demo-screen');
-
-demoButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const demoType = button.getAttribute('data-demo');
-        
-        // Remove active class from all buttons and screens
-        demoButtons.forEach(btn => btn.classList.remove('active'));
-        demoScreens.forEach(screen => screen.classList.remove('active'));
-        
-        // Add active class to clicked button and corresponding screen
-        button.classList.add('active');
-        const targetScreen = document.getElementById(`demo-${demoType}`);
-        if (targetScreen) {
-            targetScreen.classList.add('active');
-            
-            // Reset animations when switching screens
-            if (demoType === 'integrate') {
-                // Reset chat animation
-                const chatBubbles = targetScreen.querySelectorAll('.chat-bubble');
-                chatBubbles.forEach((bubble, index) => {
-                    bubble.style.animation = 'none';
-                    setTimeout(() => {
-                        bubble.style.animation = 'slideUp 0.5s ease-out';
-                        bubble.style.animationDelay = `${index * 0.5}s`;
-                    }, 10);
-                });
-                
-                // Reset AI thinking dots
-                const thinkingDots = targetScreen.querySelectorAll('.ai-thinking span');
-                thinkingDots.forEach((dot, index) => {
-                    dot.style.animation = 'none';
-                    setTimeout(() => {
-                        dot.style.animation = 'thinking 1.4s infinite';
-                        dot.style.animationDelay = `${index * 0.2}s`;
-                    }, 10);
-                });
-            }
-            
-            if (demoType === 'automation') {
-                // Animate stats counting up
-                const statValues = targetScreen.querySelectorAll('.stat-value');
-                statValues.forEach(stat => {
-                    const targetValue = parseFloat(stat.getAttribute('data-value'));
-                    const isCounter = stat.classList.contains('counter');
-                    let currentValue = 0;
-                    const increment = targetValue / 50;
-                    const timer = setInterval(() => {
-                        currentValue += increment;
-                        if (currentValue >= targetValue) {
-                            currentValue = targetValue;
-                            if (!isCounter) {
-                                clearInterval(timer);
-                            }
-                        }
-                        stat.textContent = Math.floor(currentValue);
-                    }, 30);
-                    
-                    // Store timer to clear when switching demos
-                    stat.dataset.timer = timer;
-                });
-                
-                // Continuous counter for "Tasks Today"
-                const counter = targetScreen.querySelector('.stat-value.counter');
-                if (counter) {
-                    setInterval(() => {
-                        let current = parseInt(counter.textContent);
-                        counter.textContent = current + Math.floor(Math.random() * 3) + 1;
-                    }, 2000);
-                }
-            }
-        }
-    });
-});
-
-// Auto-cycle through demos every 5 seconds
-let currentDemoIndex = 0;
-const demoCycle = setInterval(() => {
-    currentDemoIndex = (currentDemoIndex + 1) % demoButtons.length;
-    // Only auto-cycle if user hasn't manually clicked recently
-    if (!document.querySelector('.demo-btn:hover')) {
-        demoButtons[currentDemoIndex].click();
-    }
-}, 5000);
-
-// Start the automation animation on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Trigger automation demo after a short delay
-    setTimeout(() => {
-        const automationBtn = document.querySelector('.demo-btn[data-demo="automation"]');
-        if (automationBtn && !automationBtn.classList.contains('active')) {
-            // Will trigger on first cycle
-        }
-    }, 1000);
-});
-
-// Stop auto-cycle when user interacts
-demoButtons.forEach(button => {
-    button.addEventListener('mouseenter', () => {
-        clearInterval(demoCycle);
-    });
-});
 
 // Add typed effect to hero title (optional enhancement)
 function typeWriter(element, text, speed = 100) {
@@ -258,13 +154,61 @@ function typeWriter(element, text, speed = 100) {
     type();
 }
 
-// Removed typing effect for faster load
-// document.addEventListener('DOMContentLoaded', () => {
-//     const heroTagline = document.querySelector('.hero-tagline');
-//     if (heroTagline) {
-//         const originalText = heroTagline.textContent;
-//         setTimeout(() => {
-//             typeWriter(heroTagline, originalText, 50);
-//         }, 500);
-//     }
-// });
+// Enquiry form handler
+const enquiryForm = document.getElementById('enquiry-form');
+if (enquiryForm) {
+    enquiryForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const submitBtn = enquiryForm.querySelector('.enquiry-submit');
+        const successMsg = document.getElementById('enquiry-success');
+        const errorMsg = document.getElementById('enquiry-error');
+
+        // Hide previous messages
+        successMsg.style.display = 'none';
+        errorMsg.style.display = 'none';
+
+        // Disable button
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        const formData = {
+            name: document.getElementById('enquiry-name').value,
+            email: document.getElementById('enquiry-email').value,
+            company: document.getElementById('enquiry-company').value,
+            mobile: document.getElementById('enquiry-mobile').value,
+            help: document.getElementById('enquiry-help').value,
+            budget: document.getElementById('enquiry-budget').value,
+            message: document.getElementById('enquiry-message').value
+        };
+
+        // Use EmailJS if configured
+        const config = window.AMPLIFYX_CONFIG;
+        if (config && config.emailJS && config.emailJS.serviceId !== 'YOUR_SERVICE_ID') {
+            emailjs.send(config.emailJS.serviceId, config.emailJS.templateId, {
+                from_name: formData.name,
+                from_email: formData.email,
+                company: formData.company,
+                mobile: formData.mobile,
+                help: formData.help,
+                budget: formData.budget,
+                message: formData.message
+            }, config.emailJS.userId).then(() => {
+                successMsg.style.display = 'block';
+                enquiryForm.reset();
+            }).catch(() => {
+                errorMsg.style.display = 'block';
+            }).finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Book a Discovery Call';
+            });
+        } else {
+            // Fallback: show success (form data logged)
+            console.log('Enquiry form submission:', formData);
+            successMsg.style.display = 'block';
+            enquiryForm.reset();
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Book a Discovery Call';
+        }
+    });
+}
