@@ -42,7 +42,7 @@ html {
     scroll-padding-top: 80px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 body {
@@ -50,7 +50,7 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 .container {
@@ -658,10 +658,21 @@ section {
     justify-content: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-lg);
-    background: rgba(123, 63, 242, 0.05);
+    background: rgba(10, 10, 11, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(123, 63, 242, 0.2);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-xl);
+    position: sticky;
+    top: 80px;
+    z-index: 50;
+    transition: box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+.builder-preview.has-content {
+    border-color: rgba(123, 63, 242, 0.5);
+    box-shadow: 0 0 20px rgba(123, 63, 242, 0.15), 0 0 40px rgba(123, 63, 242, 0.05);
 }
 
 .preview-step {
@@ -1257,11 +1268,27 @@ section {
     }
 
     .builder-preview {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        padding: 8px 10px;
+        top: 70px;
+        gap: 6px;
     }
 
-    .preview-arrow {
-        transform: rotate(90deg);
+    .builder-preview .preview-step {
+        padding: 6px 8px;
+        min-width: 0 !important;
+        font-size: 0.7rem;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .builder-preview .preview-arrow {
+        font-size: 0.85rem;
+        transform: none;
+        flex-shrink: 0;
     }
 
     .pricing-grid {

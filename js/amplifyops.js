@@ -136,6 +136,13 @@ function updatePreview() {
         previewOutput.innerHTML = '<span class="preview-placeholder">Output</span>';
         previewOutput.classList.remove('filled');
     }
+
+    // Toggle glow when any step is filled
+    const builderPreview = document.getElementById('builderPreview');
+    if (builderPreview) {
+        const hasFilled = builderPreview.querySelector('.preview-step.filled');
+        builderPreview.classList.toggle('has-content', !!hasFilled);
+    }
 }
 
 // Attach listeners to all builder inputs
