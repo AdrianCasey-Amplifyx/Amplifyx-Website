@@ -1912,108 +1912,58 @@ body.loaded {
     }
     
     section {
-        min-height: auto;
-        padding: 100px 0 var(--spacing-xl);
-        padding-top: 100px !important;
+        min-height: auto !important;
+        height: auto !important;
+        padding: var(--spacing-xl) 0 !important;
         overflow-x: hidden;
         max-width: 100vw;
-        scroll-padding-top: 100px;
+        scroll-snap-align: none;
     }
-    
-    .problem-section {
-        padding-top: 100px !important;
-    }
-    
+
     .hero {
-        min-height: auto;
-        height: auto;
+        min-height: auto !important;
+        height: auto !important;
         overflow-x: hidden;
-        padding-top: 80px;
+        padding: calc(80px + var(--spacing-lg)) 0 var(--spacing-lg) !important;
     }
-    
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-description {
+        font-size: 1rem;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-ctas .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-large {
+        padding: 0.85rem 1.5rem;
+        font-size: 1rem;
+    }
+
     .container {
-        padding: 0 15px;
+        padding: 0 var(--spacing-sm);
         max-width: 100%;
     }
-    
-    /* AI Automation Demo - Mobile Layout */
-    .automation-builder {
-        position: relative;
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
+
+    .section-title {
+        font-size: 1.6rem;
     }
-    
-    .workflow-canvas {
-        flex-direction: column;
-        padding: 15px;
-        gap: 8px;
-        min-height: 280px;
+
+    .section-subtitle {
+        font-size: 0.95rem;
+        margin-top: calc(-1 * var(--spacing-sm));
     }
-    
-    .workflow-stage {
-        min-width: 80px;
-        padding: 12px 10px;
-        gap: 6px;
-    }
-    
-    .stage-icon {
-        font-size: 18px;
-    }
-    
-    .stage-label {
-        font-size: 9px;
-        letter-spacing: 0.3px;
-    }
-    
-    .flow-arrow {
-        transform: rotate(90deg);
-        font-size: 18px;
-        margin: -5px 0;
-    }
-    
-    .automation-stats {
-        flex-direction: row;
-        padding: 12px 10px;
-        gap: 5px;
-        justify-content: space-between;
-    }
-    
-    .stat-item {
-        flex: 1;
-        min-width: 0;
-    }
-    
-    .stat-value {
-        font-size: 18px;
-    }
-    
-    .stat-label {
-        font-size: 8px;
-        line-height: 1.2;
-    }
-    
-    .live-indicator {
-        top: 5px;
-        right: 5px;
-        padding: 2px 6px;
-        gap: 4px;
-    }
-    
-    .live-text {
-        font-size: 8px;
-    }
-    
-    .live-dot {
-        width: 5px;
-        height: 5px;
-    }
-    
-    .demo-display {
-        min-height: 480px;
-        height: auto;
-    }
-    
+
     .nav-menu {
         position: fixed;
         left: -100%;
@@ -2027,29 +1977,48 @@ body.loaded {
         padding: var(--spacing-md) 0;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     .nav-menu.active {
         left: 0;
     }
-    
+
     .nav-toggle {
         display: flex;
     }
-    
+
     .nav-cta {
         display: none;
     }
-    
-    .hero-title {
-        font-size: 2.5rem;
-    }
-    
+
     .products-grid {
         grid-template-columns: 1fr;
     }
 
+    .audience-section {
+        padding: var(--spacing-lg) 0 !important;
+    }
+
     .audience-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+
+    .audience-card {
+        padding: var(--spacing-md);
+    }
+
+    .audience-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .audience-card h3 {
+        font-size: 0.95rem;
+    }
+
+    .audience-card p {
+        font-size: 0.85rem;
     }
 
     .spotlight-content {
@@ -2069,25 +2038,61 @@ body.loaded {
         transform: rotate(90deg);
     }
 
+    .spotlight-heading {
+        font-size: 1.6rem;
+    }
+
+    .spotlight-body {
+        font-size: 1rem;
+    }
+
+    .contact-section {
+        padding: var(--spacing-xl) 0 !important;
+    }
+
+    .contact-description {
+        font-size: 1rem;
+    }
+
+    .enquiry-form-wrapper {
+        padding: var(--spacing-md);
+    }
+
     .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
         grid-template-columns: 1fr;
     }
 
     .footer-links {
         grid-template-columns: 1fr;
     }
+
+    .product-card {
+        padding: var(--spacing-md);
+    }
+
+    .product-featured {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .product-card h3 {
+        font-size: 1.2rem;
+    }
 }
 
 @media (max-width: 480px) {
     .hero-title {
-        font-size: 2rem;
-    }
-    
-    .section-title {
         font-size: 1.8rem;
     }
-    
-    .audience-grid {
-        grid-template-columns: 1fr;
+
+    .section-title {
+        font-size: 1.4rem;
+    }
+
+    .container {
+        padding: 0 12px;
     }
 }

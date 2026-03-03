@@ -891,15 +891,52 @@ section {
     }
 
     .section-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+
+    .proposal-hero {
+        min-height: auto;
+        padding-top: 100px;
+        padding-bottom: var(--spacing-lg);
     }
 
     .proposal-hero h1 {
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .proposal-hero .hero-sub {
-        font-size: 1.05rem;
+        font-size: 1rem;
+    }
+
+    .hero-logos {
+        gap: var(--spacing-sm);
+    }
+
+    .hero-logo-amplifyx {
+        height: 35px;
+    }
+
+    .hero-logo-client {
+        height: 60px;
+    }
+
+    .hero-logo-separator {
+        font-size: 1.5rem;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-ctas .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-large {
+        padding: 14px 24px;
+        font-size: 0.95rem;
     }
 
     .recipe-flow-visual {
@@ -915,15 +952,31 @@ section {
     }
 
     .automation-label {
-        padding: var(--spacing-sm) var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+
+    .automation-name {
+        font-size: 0.75rem;
+        flex: none;
+        width: 100%;
+        order: -1;
+    }
+
+    .automation-number {
+        order: -2;
     }
 
     .automation-flow {
-        padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
     }
 
     .automation-details {
-        padding: 0 var(--spacing-md) var(--spacing-md);
+        padding: 0 var(--spacing-sm) var(--spacing-md);
+    }
+
+    .automation-detail-item p {
+        font-size: 0.85rem;
     }
 
     .process-steps {
@@ -953,6 +1006,11 @@ section {
         gap: var(--spacing-lg);
     }
 
+    .footer-links {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
     .proposal-nav .nav-menu {
         display: none;
         position: absolute;
@@ -977,35 +1035,68 @@ section {
         display: flex;
     }
 
+    .what-section .what-content {
+        font-size: 1rem;
+    }
+
+    .bespoke-card {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
     .next-steps h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+
+    .next-steps p {
+        font-size: 1rem;
+    }
+
+    .pricing-card {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .pricing-card .pricing-amount {
+        font-size: 1.6rem;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 0 var(--spacing-sm);
+        padding: 0 12px;
     }
 
     .section-title {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
 
     .proposal-hero h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 
-    .hero-ctas {
-        flex-direction: column;
-        align-items: center;
+    .proposal-hero .hero-tagline {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
     }
 
-    .hero-ctas .btn {
-        width: 100%;
-        text-align: center;
+    .hero-logo-amplifyx {
+        height: 28px;
     }
 
-    .automation-label {
-        gap: var(--spacing-xs);
+    .hero-logo-client {
+        height: 45px;
+    }
+
+    .segment-badge,
+    .tier-badge {
+        font-size: 0.6rem;
+        padding: 2px 8px;
+    }
+
+    .flow-step-text {
+        font-size: 0.8rem;
+    }
+
+    .flow-step-icon {
+        font-size: 1.1rem;
     }
 }
